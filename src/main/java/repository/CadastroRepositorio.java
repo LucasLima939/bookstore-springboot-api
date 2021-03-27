@@ -35,7 +35,7 @@ public class CadastroRepositorio {
     }
 
     public List<Cadastro> getAllCadastros(){
-        Query query = entityManager.createQuery("SELECT e FROM Produto e");
+        Query query = entityManager.createQuery("SELECT e FROM Cadastro e");
         return query.getResultList();
     }
 

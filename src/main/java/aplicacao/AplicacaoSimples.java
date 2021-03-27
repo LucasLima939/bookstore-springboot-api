@@ -12,7 +12,7 @@ public class AplicacaoSimples {
     static CadastroRepositorio cadastroRepositorio = new CadastroRepositorio();
 	
 	public static void main(String[] args) {
-		cadastrarUsuario();
+		recuperarTodosUsuários();
         System.exit(0);
 
 	}
@@ -25,11 +25,9 @@ public class AplicacaoSimples {
         cadastro.setLogin("teste03");
         cadastro.setSenha("123456");
         cadastro.setTelefone("99999999");
-        CadastroRepositorio repositorio = new CadastroRepositorio();
 
-        repositorio.create(cadastro);
+        cadastroRepositorio.create(cadastro);
         
-		repositorio.fecharConexao();
     }
 
     private static void recuperarUsuario(){
@@ -41,11 +39,11 @@ public class AplicacaoSimples {
         }
     }
 
-    /* recuperarTodosUsuários(){
+    private static void recuperarTodosUsuários(){
         List<Cadastro> cadastros = cadastroRepositorio.getAllCadastros();
-        cadastros.forEach((u){
-            System.out.println(u.getName());
-        });
-    } */
+        for(Cadastro c : cadastros){
+            System.out.println(c.getName());
+        }
+    }
 
 }
