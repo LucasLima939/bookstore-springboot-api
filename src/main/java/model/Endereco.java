@@ -1,8 +1,11 @@
 package model;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@Embeddable
+@Entity
+@Table(name = "tab_cadastro")
 public class Endereco {
 	
 	private String cep;	
