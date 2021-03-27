@@ -1,5 +1,8 @@
 package model;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Endereco {
 	
 	private String cep;	
