@@ -32,6 +32,19 @@
 	    <artifactId>eclipselink</artifactId>
 	    <version>2.5.0</version>
 	</dependency>
+  
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.5.1</version>
+		</dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>5.4.10.Final</version>
+    </dependency>
+
 	    
   </dependencies>
 

@@ -34,28 +34,28 @@ public class Cadastro {
 	@Column(length = 11,nullable = false,unique = true)
 	private String cpf;
 
-	@Column(length = 11,nullable = false,unique = true)
+	@Column(length = 50,nullable = false,unique = true)
 	private String email;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cadastro")
-	private List<Telefone> telefones = new ArrayList<Telefone>();;
+	/* @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cadastro")
+	private List<Telefone> telefones = new ArrayList<Telefone>();; */
+	private String telefone;
 
 	@Column(length = 20,nullable = false, unique = true)
 	private String login;
 
-	@Column(nullable = false)
+	@Column(length = 50,nullable = false)
 	private String senha; 
 
 	/* @ElementCollection(fetch = FetchType.LAZY)
 	private List<String> emails = new ArrayList<String>(); */
 
-
-	public List<Telefone> getTelefones() {
-		return this.telefones;
+	public String getTelefone() {
+		return this.telefone;
 	}
 
-	public void setTelefones(List<Telefone> telefones) {
-		this.telefones = telefones;
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 
 	public String getLogin() {
