@@ -1,12 +1,30 @@
 package model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tab_cadastro_livro")
 public class CadastroLivro {
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)	
 	private Integer id;
+	
+	@Column(length = 50, nullable = false)
 	private String isbn;
+	
+	@Column(length = 100)
 	private String titulo;
+	
 	private Double valorDiaria;
+	
 	private int numeroExemplares;
+	
 	private int numeroExemplaresReservados;
 	
 	public Integer getId() {

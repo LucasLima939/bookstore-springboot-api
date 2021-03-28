@@ -2,13 +2,37 @@ package model;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name = "tab_locacao")
 public class Locacao {
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+	
+	@Temporal(TemporalType.DATE)
 	private Date dataAgendamento;
+	
+	@Temporal(TemporalType.DATE)
 	private Date dataRetirada;
+	
+	@Temporal(TemporalType.DATE)
 	private Date dataFinalizacao;
-	private Double valorTotal;
+	
+	private Double valorTotal = 0.0;
+	
+    @Enumerated(EnumType.STRING)
+	private StatusLocacao status = StatusLocacao.RESERVADA;
 	
 	public Integer getId() {
 		return id;
