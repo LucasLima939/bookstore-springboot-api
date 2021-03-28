@@ -1,4 +1,4 @@
-package model;
+package aplicacao.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,27 +8,24 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tab_livro")
+@Table(name = "tab_cadastro_livro")
 public class CadastroLivro {
-	
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)	
 	private Integer id;
 	
-	@Column(nullable = false)
+	@Column(length = 50, nullable = false)
 	private String isbn;
 	
-	@Column(nullable = false)
+	@Column(length = 100)
 	private String titulo;
 	
-	@Column(length = 64, nullable = false)
 	private Double valorDiaria;
 	
-	@Column(length = 32, nullable = false)
-	private Integer numeroExemplares;
+	private int numeroExemplares;
 	
-	@Column(length = 32)
-	private Integer numeroExemplaresReservados;
+	private int numeroExemplaresReservados;
 	
 	public Integer getId() {
 		return id;

@@ -1,4 +1,4 @@
-package model;
+package aplicacao.model;
 
 
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,6 +25,22 @@ import javax.persistence.TemporalType;
 
 //@NamedEntityGraph(name = "Cadastro.telefones")
 public class Cadastro {
+	public Cadastro(
+			String name,
+			String cpf,
+			String email,
+			String login,
+			String senha,
+			Endereco endereco
+			){
+		this.name = name;
+		this.cpf = cpf;
+		this.email = email;
+		this.login = login;
+		this.senha = senha;
+		this.endereco = endereco;
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -39,6 +56,7 @@ public class Cadastro {
 
 	/* @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cadastro")
 	private List<Telefone> telefones = new ArrayList<Telefone>();; */
+	@Column(length = 50)
 	private String telefone;
 
 	@Column(length = 20,nullable = false, unique = true)
@@ -46,6 +64,9 @@ public class Cadastro {
 
 	@Column(length = 50,nullable = false)
 	private String senha; 
+	
+	@OneToOne(cascade = {CascadeType.ALL})
+	private Endereco endereco;
 
 	/* @ElementCollection(fetch = FetchType.LAZY)
 	private List<String> emails = new ArrayList<String>(); */
@@ -104,5 +125,13 @@ public class Cadastro {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Endereco getEndereco() {
+		return this.endereco;
+	}
+
+	public void setEndereco(Endereco endereco) {
+		this.endereco = endereco;
 	}
 }
