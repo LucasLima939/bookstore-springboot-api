@@ -1,4 +1,6 @@
-package model;
+package aplicacao.model;
+
+
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -19,9 +21,8 @@ public class Endereco {
 		this.cep = cep;
 	}
 	
-
-    @OneToOne
-    private Cadastro cadastro;
+	@OneToOne
+	Cadastro cadastro;	
     
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,6 +105,7 @@ public class Endereco {
 	public void setCadastro(Cadastro cadastro) {
 		this.cadastro = cadastro;
 	}
+
 	
 	
 	

@@ -1,4 +1,4 @@
-package model;
+package aplicacao.model;
 
 
 import java.util.ArrayList;
@@ -65,8 +65,7 @@ public class Cadastro {
 	@Column(length = 50,nullable = false)
 	private String senha; 
 	
-	@OneToOne
-	@Column(nullable = false)
+	@OneToOne(cascade = {CascadeType.ALL})
 	private Endereco endereco;
 
 	/* @ElementCollection(fetch = FetchType.LAZY)
