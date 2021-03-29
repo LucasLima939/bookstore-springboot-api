@@ -30,7 +30,7 @@ public class AplicacaoSpring {
         	
         	Cadastro usuario = application.recuperarUsuario(3);
         	if(usuario != null) {
-        		usuario.setName("TESTANDO");
+        		usuario.setName("TESTANDO2");
         		Cadastro response = application.editarUsuario(usuario);
         		System.out.println(response.getName());        		
         	}
