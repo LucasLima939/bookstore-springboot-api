@@ -75,6 +75,9 @@ public class CadastroLivro {
 		this.numeroExemplaresReservados = numeroExemplaresReservados;
 	}
 	
+	public CadastroLivro()
+	{}
+	
 	
 
 }

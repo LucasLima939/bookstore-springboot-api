@@ -41,6 +41,8 @@ public class Cadastro {
 		this.endereco = endereco;
 	}
 	
+	public Cadastro(){}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;

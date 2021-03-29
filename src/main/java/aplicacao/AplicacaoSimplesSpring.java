@@ -1,5 +1,9 @@
 package aplicacao;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,18 +22,39 @@ public class AplicacaoSimplesSpring {
 	@Autowired
 	private CadastroRepositorio cadastroRepository;
 	
-	public Cadastro criarUsuario() {
-		Cadastro cadastro =  new Cadastro(
-				"Lucas02",
-				"22222222223", 
-				"teste@teste2",
-				"teste03",
-				"123456",
-				new Endereco(
-						"50000-000"));
-        return cadastroRepository.save(cadastro);
-		
+	public Cadastro criarUsuario(Cadastro usuario) {
+        return cadastroRepository.save(usuario);		
 	}
+	
+	public Cadastro recuperarUsuario(Integer id){
+		return cadastroRepository.findById(id).orElse(null);
+	}
+	
+	public List<Cadastro> recuperarTodosUsuarios() {
+		List<Cadastro> todosUsuarios = new ArrayList<Cadastro>();
+		cadastroRepository.findAll().forEach(todosUsuarios::add);
+		return todosUsuarios;
+	}
+	
+	public List<Cadastro> recuperarUsuariosPorListaId(List<Integer> ids){
+		List<Cadastro> todosUsuarios = new ArrayList<Cadastro>();
+		cadastroRepository.findAllById(ids).forEach(todosUsuarios::add);
+		return todosUsuarios;
+	}
+	
+	public Cadastro editarUsuario(Cadastro cadastro){
+		return cadastroRepository.save(cadastro);
+	}
+	
+	public Boolean deletarUsuario(Integer id) {
+		try {
+		cadastroRepository.deleteById(id);
+		return true;
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
+	}
+	
 	
 }
 
