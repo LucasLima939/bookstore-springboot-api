@@ -55,5 +55,8 @@ public class Telefone {
     public void setTipo(TelefoneTipo tipo) {
         this.tipo = tipo;
     }
+    
+    public Telefone()
+    {}
 
 }

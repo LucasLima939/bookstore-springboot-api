@@ -74,5 +74,8 @@ public class Locacao {
 		this.valorTotal = valorTotal;
 	}
 	
+	public Locacao()
+	{}
+	
 	
 }

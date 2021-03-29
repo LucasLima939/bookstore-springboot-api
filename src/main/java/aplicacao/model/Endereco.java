@@ -105,6 +105,9 @@ public class Endereco {
 	public void setCadastro(Cadastro cadastro) {
 		this.cadastro = cadastro;
 	}
+	
+	public Endereco()
+	{}
 
 	
 	
