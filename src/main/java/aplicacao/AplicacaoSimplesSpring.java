@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import aplicacao.model.Cadastro;
 import aplicacao.model.Endereco;
+import aplicacao.repository.CadastroLivroRepositorio;
 import aplicacao.repository.CadastroRepositorio;
 
 
@@ -13,6 +14,9 @@ public class AplicacaoSimplesSpring {
 	
 	@Autowired
 	private CadastroLivroRepositorio livroRepository;
+	
+	@Autowired
+	private CadastroRepositorio cadastroRepository;
 	
 	public Cadastro criarUsuario() {
 		Cadastro cadastro =  new Cadastro(

@@ -1,8 +1,8 @@
-package repository;
+package aplicacao.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
-import model.CadastroLivro;
+import aplicacao.model.CadastroLivro;
 
 public interface CadastroLivroRepositorio extends CrudRepository<CadastroLivro, Integer>{
 
