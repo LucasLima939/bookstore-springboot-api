@@ -27,6 +27,13 @@ public class CadastroLivro {
 	
 	private int numeroExemplaresReservados;
 	
+	public CadastroLivro(String isbn, String titulo, Double valorDiaria, int numeroExemplares) {
+		this.isbn = isbn;
+		this.titulo = titulo;
+		this.valorDiaria = valorDiaria;
+		this.numeroExemplares = numeroExemplares;
+	}
+	
 	public Integer getId() {
 		return id;
 	}

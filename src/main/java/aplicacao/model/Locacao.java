@@ -1,16 +1,22 @@
 package aplicacao.model;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 
 @Entity
 @Table(name = "tab_locacao")
@@ -20,7 +26,16 @@ public class Locacao {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@OneToOne
+    @JoinColumn(nullable = false)
+    private Cadastro cadastro;
+	
+    @ManyToMany
+    @Column(nullable = false)
+    private List<CadastroLivro> livros;
+
 	@Temporal(TemporalType.DATE)
+	@Column(nullable = false)
 	private Date dataAgendamento;
 	
 	@Temporal(TemporalType.DATE)
@@ -30,9 +45,15 @@ public class Locacao {
 	private Date dataFinalizacao;
 	
 	private Double valorTotal = 0.0;
-	
-    @Enumerated(EnumType.STRING)
+
+	@Enumerated(EnumType.STRING)
 	private StatusLocacao status = StatusLocacao.RESERVADA;
+	
+	public Locacao(Cadastro cadastro, List<CadastroLivro> livros, Date dataAgendamento) {
+		this.cadastro = cadastro;
+		this.livros = livros;
+		this.dataAgendamento = dataAgendamento;
+	}
 	
 	public Integer getId() {
 		return id;
@@ -40,6 +61,22 @@ public class Locacao {
 	
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public Cadastro getCadastro() {
+		return cadastro;
+	}
+
+	public void setCadastro(Cadastro cadastro) {
+		this.cadastro = cadastro;
+	}
+
+	public List<CadastroLivro> getLivros() {
+		return livros;
+	}
+
+	public void setLivros(List<CadastroLivro> livros) {
+		this.livros = livros;
 	}
 	
 	public Date getDataAgendamento() {
