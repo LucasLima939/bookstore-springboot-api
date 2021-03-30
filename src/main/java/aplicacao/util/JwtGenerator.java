@@ -12,17 +12,12 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;  
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;  
+import io.jsonwebtoken.ExpiredJwtException;
 
 public class JwtGenerator {
 	
 	static String signatureKey = "Bq6qyEBdGfeumWWdWvKrXxquSLT9eWxMJK05FSjBdUCVpX+SJJAnZm9ptVJHtBgXUJkDsDBcfo/u6jmoOJAHgVL8zG57wAZ0Cl1xPRQlCjBkJEmqBErRNbHaLzLaE/0Yhl5Oymxw9H+/7MVxbVhvlfgcvifc+yXDhHPCguHuBAc=";
 	
-	public static void main(String[] args) {
-		
-		String jwt = generate();
-//		
-		String response = checkIsValid(jwt);
-	}
 	
 	static String generate(){	
 		 try {
@@ -30,7 +25,7 @@ public class JwtGenerator {
 		@SuppressWarnings("deprecation")
 		String jwt = Jwts.builder().setIssuer("http://trustyapp.com/")  
 		    .setSubject("users/1300819380")  
-		    .setExpiration(new Date(System.currentTimeMillis() + 360000000))
+		    .setExpiration(new Date(System.currentTimeMillis() + (3600000 * 72)))
 		    .claim("scope", "self api/buy")
 		    .signWith(SignatureAlgorithm.HS256,Base64.decodeBase64(signatureKey))  
 		    .compact();
@@ -50,11 +45,15 @@ public class JwtGenerator {
 		    Object body = jwtClaims.getBody();
 		    return jwt;
 		} 
-		catch (Exception e) {  
-		    return null;
+		catch (Exception e) {
+			if(e instanceof ExpiredJwtException) {
+				return generate();
+			} else {
+			    return null;				
+			}
 		}
 	}
-	/* CÓDIGO DE EXEMPLO PARA GERAR CHAVES DE ASSINATURA
+	/*
 	private static byte[] getSignatureKey() {
 		 KeyPair keyPair;
 		try {
