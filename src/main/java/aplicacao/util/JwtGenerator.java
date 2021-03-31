@@ -19,12 +19,12 @@ public class JwtGenerator {
 	static String signatureKey = "Bq6qyEBdGfeumWWdWvKrXxquSLT9eWxMJK05FSjBdUCVpX+SJJAnZm9ptVJHtBgXUJkDsDBcfo/u6jmoOJAHgVL8zG57wAZ0Cl1xPRQlCjBkJEmqBErRNbHaLzLaE/0Yhl5Oymxw9H+/7MVxbVhvlfgcvifc+yXDhHPCguHuBAc=";
 	
 	
-	static String generate(){	
+	static String generate(String userLogin){	
 		 try {
 		  
 		@SuppressWarnings("deprecation")
 		String jwt = Jwts.builder().setIssuer("http://trustyapp.com/")  
-		    .setSubject("users/1300819380")  
+		    .setSubject(userLogin)  
 		    .setExpiration(new Date(System.currentTimeMillis() + (3600000 * 72)))
 		    .claim("scope", "self api/buy")
 		    .signWith(SignatureAlgorithm.HS256,Base64.decodeBase64(signatureKey))  
@@ -38,7 +38,7 @@ public class JwtGenerator {
 		}
 	}
 	
-	static String checkIsValid(String jwt){
+	static String checkIsValid(String jwt, String userLogin){
 		try {  
 		    @SuppressWarnings({ "rawtypes", "deprecation" })
 			Jws jwtClaims = Jwts.parser().setSigningKey(Base64.decodeBase64(signatureKey)).parseClaimsJws(jwt);  
@@ -47,7 +47,7 @@ public class JwtGenerator {
 		} 
 		catch (Exception e) {
 			if(e instanceof ExpiredJwtException) {
-				return generate();
+				return generate(userLogin);
 			} else {
 			    return null;				
 			}

@@ -10,6 +10,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tab_cadastro_livro")
 public class CadastroLivro {
+	
+	CadastroLivro(String isbn, String titulo, double valorDiaria, int numeroExemplares){
+		this.isbn = isbn;
+		this.titulo = titulo;
+		this.valorDiaria = valorDiaria;
+		this.numeroExemplares = numeroExemplares;		
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)	

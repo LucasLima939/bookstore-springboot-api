@@ -21,6 +21,11 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "tab_locacao")
 public class Locacao {
+	
+	public Locacao(Cadastro cadastro, List<CadastroLivro> livros){
+		this.cadastro = cadastro;
+		this.livros = livros;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +41,7 @@ public class Locacao {
 
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	private Date dataAgendamento;
+	private Date dataAgendamento = new Date(System.currentTimeMillis());
 	
 	@Temporal(TemporalType.DATE)
 	private Date dataRetirada;
@@ -48,12 +53,6 @@ public class Locacao {
 
 	@Enumerated(EnumType.STRING)
 	private StatusLocacao status = StatusLocacao.RESERVADA;
-	
-	public Locacao(Cadastro cadastro, List<CadastroLivro> livros, Date dataAgendamento) {
-		this.cadastro = cadastro;
-		this.livros = livros;
-		this.dataAgendamento = dataAgendamento;
-	}
 	
 	public Integer getId() {
 		return id;

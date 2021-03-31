@@ -85,8 +85,8 @@ public class AplicacaoSimplesSpring {
 		return todosLivros;
 	}
 	
-	public Locacao agendarLivro (Locacao locacao, Integer id) throws Exception{
-		Cadastro cadastro = recuperarUsuario(id);
+	public Locacao agendarLivro (Locacao locacao) throws Exception{
+		Cadastro cadastro = locacao.getCadastro();
 		List<CadastroLivro> livros = locacao.getLivros();
 		if (cadastro == null) {
             throw new BibliotecaException("Impossivel locar sem um cliente");
@@ -102,7 +102,8 @@ public class AplicacaoSimplesSpring {
 			cadastroLivro.setNumeroExemplares(cadastroLivro.getNumeroExemplares() - 1);
 			cadastroLivro.setNumeroExemplaresReservados(cadastroLivro.getNumeroExemplaresReservados() + 1);
 		}
-		return locacaoRepository.save(locacao);
+        Locacao loc = locacaoRepository.save(locacao);
+        return loc;
 	}
 	
 }
