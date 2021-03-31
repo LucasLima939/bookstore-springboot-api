@@ -16,9 +16,16 @@ import javax.persistence.Table;
 public class Endereco {
 	
 	public Endereco(
-			String cep
+			ViaCepModel model,
+			String numero
 			) {
-		this.cep = cep;
+		this.cep = model.getCep();
+		this.bairro= model.getBairro();
+		this.cidade = model.getLocalidade();
+		this.ibge = model.getIbge();
+		this.logradouro = model.getLogradouro();
+		this.uf = model.getUf();
+		this.numero = numero;
 	}
 	
 	@OneToOne

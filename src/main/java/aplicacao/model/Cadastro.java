@@ -30,15 +30,13 @@ public class Cadastro {
 			String cpf,
 			String email,
 			String login,
-			String senha,
-			Endereco endereco
+			String senha
 			){
 		this.name = name;
 		this.cpf = cpf;
 		this.email = email;
 		this.login = login;
 		this.senha = senha;
-		this.endereco = endereco;
 	}
 	
 	public Cadastro(){}

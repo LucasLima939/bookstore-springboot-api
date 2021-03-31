@@ -1,4 +1,4 @@
-package aplicacao.util;
+package aplicacao.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,19 +6,67 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
 
 import aplicacao.model.Endereco;
+import aplicacao.model.ViaCepModel;
 
 public class ViaCepService {
-	
-	 public static void main(String[] args) {
-		 getEnderecoByCep("");
-	    }
+	 
+	 public ViaCepModel getModelByCep(String cep) {
+		    HttpURLConnection c = null;
+		    try {
+				URL url = new URL("https://viacep.com.br/ws/" + cep + "/json");
+		        c = (HttpURLConnection) url.openConnection();
+		        c.setRequestMethod("GET");
+		        c.setRequestProperty("Content-length", "0");
+		        c.setUseCaches(false);
+		        c.setAllowUserInteraction(false);
+		        c.setConnectTimeout(5000);
+		        c.setReadTimeout(5000);
+		        c.connect();
+		        int status = c.getResponseCode();
+
+		        switch (status) {
+		            case 200:
+		            case 201:
+		                BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+		                StringBuilder sb = new StringBuilder();
+		                String line;
+		                while ((line = br.readLine()) != null) {
+		                    sb.append(line+"\n");
+		                }
+		                br.close();
+		                if(sb.toString() != null) {
+		                	return new Gson().fromJson(sb.toString(), ViaCepModel.class);
+		                } else {
+		                	return null;
+		                }
+		        }
+
+		    } catch (Exception ex) {
+		    	return null;
+		    } finally {
+		       if (c != null) {
+		          try {
+		              c.disconnect();
+		          } catch (Exception ex) {
+		             System.out.println(ex);
+		          }
+		       }
+		    }
+		    return null;
+		}
 	 
 	 
 	static void getEnderecoByCep(String cep){
@@ -40,21 +88,20 @@ public class ViaCepService {
 		in.close();
 		
 		con.disconnect();
-		
-		int status = con.getResponseCode();
 
-		Reader streamReader = null;
-
-		if (status > 299) {
-		    streamReader = new InputStreamReader(con.getErrorStream());
+		BufferedReader br = null;
+		if (100 <= con.getResponseCode() && con.getResponseCode() <= 399) {
+		    br = new BufferedReader( new InputStreamReader(con.getInputStream()));
 		} else {
-		    streamReader = new InputStreamReader(con.getInputStream());
+		    br = new BufferedReader (new InputStreamReader(con.getErrorStream()));
 		}
-		
+		String strResponse = br.readLine();
+		System.out.println(strResponse);
 		String response = getFullResponse(con);
 		System.out.println(response);
 		
 		} catch (Exception  e) {
+			System.out.println(e);
 		}
 		
 		

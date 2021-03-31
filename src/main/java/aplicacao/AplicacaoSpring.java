@@ -22,36 +22,18 @@ public class AplicacaoSpring {
 	
 	@Bean
     public CommandLineRunner run(AplicacaoSimplesSpring application) throws Exception {
-        return args -> {
-//        	application.criarUsuario(new Cadastro(
-//				"Lucas03",
-//				"22222222224", 
-//				"teste@teste3",
-//				"teste04",
-//				"123457",
-//				new Endereco(
-//						"60000-000")));
+        return args -> {        	
         	
-//        	Cadastro usuario = application.recuperarUsuario(3);
-//        	if(usuario != null) {
-//        		usuario.setName("TESTANDO2");
-//        		Cadastro response = application.editarUsuario(usuario);
-//        		System.out.println(usuario.getName());     
-        	//}
+        	application.cadastrarUsuario(new Cadastro(
+    				"Time03", // NOME
+    				"1111111111", //CPF
+    				"example@example.com", //EMAIL
+    				"time03", // LOGIN
+    				"01001111 01001001"), //SENHA
+    				"50771-140", // CEP
+    				"680" // NUMERO
+        			);
         	
-//        	application.criarLivro(new CadastroLivro(
-//        			"1234456",
-//        			"Livro 1",
-//        			20.00,
-//        			5));
-        	
-//        	CadastroLivro livro = application.recuperarLivro(1);
-//        	if(livro != null)
-//        		System.out.println(livro.getTitulo());
-        	
-        	Cadastro cadastro = application.recuperarUsuario(1);
-        	Locacao loc = new Locacao(cadastro, application.recuperarTodosLivros());
-        	application.agendarLivro(loc);
         };
     }
 
