@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import aplicacao.model.Cadastro;
 import aplicacao.model.Endereco;
@@ -12,6 +13,7 @@ import aplicacao.repository.CadastroLivroRepositorio;
 import aplicacao.repository.CadastroRepositorio;
 import aplicacao.repository.LocacaoRepositorio;
 
+@Service
 public class CadastroService {
 	
 	@Autowired
