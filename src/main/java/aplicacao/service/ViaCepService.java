@@ -3,27 +3,23 @@ package aplicacao.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 
-import aplicacao.model.Endereco;
 import aplicacao.model.ViaCepModel;
 
-@Component
+@Service
 public class ViaCepService {
 	 
 	 public ViaCepModel getModelByCep(String cep) {

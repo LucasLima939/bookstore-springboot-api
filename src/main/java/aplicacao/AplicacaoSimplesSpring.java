@@ -29,7 +29,7 @@ import aplicacao.service.ViaCepService;
 @Component
 public class AplicacaoSimplesSpring {
 	
-	@Autowired
+    @Autowired
 	private CadastroService cadastroService;
 	
 	@Autowired

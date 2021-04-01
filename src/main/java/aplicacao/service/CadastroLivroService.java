@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import aplicacao.model.CadastroLivro;
 import aplicacao.repository.CadastroLivroRepositorio;
 import aplicacao.repository.LocacaoRepositorio;
 
-@Component
+@Service
 public class CadastroLivroService {
 
 	@Autowired

@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import aplicacao.exception.BibliotecaException;
 import aplicacao.exception.LivroSemEstoqueException;
@@ -17,17 +17,23 @@ import aplicacao.model.Locacao;
 import aplicacao.model.StatusLocacao;
 import aplicacao.repository.LocacaoRepositorio;
 
-@Component
+@Service
 public class LocacaoService {
 
 	
 	@Autowired
 	private LocacaoRepositorio locacaoRepository;
 	
+	@Autowired
+	private CadastroService cadastroService;
 	
-	public Locacao agendarLivro (Locacao locacao) throws Exception{
-		Cadastro cadastro = locacao.getCadastro();
-		List<CadastroLivro> livros = locacao.getLivros();
+	@Autowired
+	private CadastroLivroService cadastroLivroService;
+	
+	
+	public Locacao agendarLivro (Locacao locacao, Integer id) throws Exception{
+		Cadastro cadastro = cadastroService.recuperarUsuario(id);
+		List<CadastroLivro> livros = cadastroLivroService.recuperarTodosLivros();
 		if (cadastro == null) {
             throw new BibliotecaException("Não é possivel realizar locação sem um cliente");
         }
@@ -42,6 +48,8 @@ public class LocacaoService {
 			livro.setNumeroExemplares(livro.getNumeroExemplares() - 1);
 			livro.setNumeroExemplaresReservados(livro.getNumeroExemplaresReservados() + 1);
 		}
+        locacao.setCadastro(cadastro);
+        locacao.setLivros(livros);
         return locacaoRepository.save(locacao);
 	}
 	
