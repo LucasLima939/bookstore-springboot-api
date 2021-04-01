@@ -16,11 +16,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import com.google.gson.Gson;
 
 import aplicacao.model.Endereco;
 import aplicacao.model.ViaCepModel;
 
+@Component
 public class ViaCepService {
 	 
 	 public ViaCepModel getModelByCep(String cep) {
