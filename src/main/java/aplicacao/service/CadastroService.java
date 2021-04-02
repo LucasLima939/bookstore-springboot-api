@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import aplicacao.model.Cadastro;
@@ -22,6 +23,9 @@ public class CadastroService {
 	@Autowired
 	private ViaCepService viaCepService;
 	
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	public Cadastro criarUsuario(Cadastro usuario, String cep, String numero) {
 		ViaCepModel model = null;
 		if(cep != null && !cep.isEmpty()) {
@@ -29,6 +33,7 @@ public class CadastroService {
 			}
 		if(model != null) {
 			usuario.setEndereco(new Endereco(model, numero));
+			usuario.getLogin().setSenha(encoder.encode(usuario.getLogin().getSenha()));
 			return cadastroRepository.save(usuario);
         } else {
         	return null;
