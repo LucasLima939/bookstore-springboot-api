@@ -15,6 +15,7 @@ import aplicacao.exception.LivroSemEstoqueException;
 import aplicacao.model.Cadastro;
 import aplicacao.model.CadastroLivro;
 import aplicacao.model.Endereco;
+import aplicacao.model.LivroLocacao;
 import aplicacao.model.Locacao;
 import aplicacao.model.StatusLocacao;
 import aplicacao.repository.CadastroLivroRepositorio;
@@ -46,9 +47,27 @@ public class AplicacaoSimplesSpring {
 					); // CEP
 	}
 	
+	public void cadastrarLivro(CadastroLivro livro){
+		if(livro != null)
+			cadastroLivroService.criarLivro(livro);
+	}
+	
+	public void cadastrarLocacao(Locacao locacao, List<LivroLocacao> livroLocacao) throws Exception{
+		if(locacao != null)
+			locacaoService.agendarLivro(locacao, livroLocacao);
+	}
+	
 	public void editarUsuario(Cadastro usuario) {
 		if(usuario != null && usuario.getId() != null)
 			cadastroService.editarUsuario(usuario);
+	}
+	
+	public Cadastro getCadastro(Integer id) {
+		return cadastroService.recuperarUsuario(id);
+	}
+	
+	public List<CadastroLivro> getLivros() {
+		return cadastroLivroService.recuperarTodosLivros();
 	}
 	
 	
