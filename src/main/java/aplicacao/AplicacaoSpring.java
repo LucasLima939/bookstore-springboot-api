@@ -28,6 +28,7 @@ public class AplicacaoSpring {
         return args -> {        	
         	
 //        	application.cadastrarUsuario(new Cadastro(
+//<<<<<<< HEAD
 //    				"Time3", // NOME
 //    				"12345678923", //CPF
 //    				"example3@example.com", //EMAIL
@@ -56,6 +57,16 @@ public class AplicacaoSpring {
         			new Date(2020-03-04)
         			), livrosLocacao);
      
+//=======
+//    				"Time04", // NOME
+//    				"1111111112", //CPF
+//    				"example@example.com.br", //EMAIL
+//    				"time04", // LOGIN
+//    				"01001111 01001000"), //SENHA
+//    				"50771-140", // CEP
+//    				"680" // NUMERO
+//        			);
+//>>>>>>> 1375d2173d8f2b791fde174f6b17bd54e9dc1e61
         	
         };
     }

@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,8 +37,7 @@ public class Cadastro {
 		this.name = name;
 		this.cpf = cpf;
 		this.email = email;
-		this.login = login;
-		this.senha = senha;
+		this.login = new Login(login, senha);
 	}
 	
 	public Cadastro(){}
@@ -59,11 +60,8 @@ public class Cadastro {
 	@Column(length = 50)
 	private String telefone;
 
-	@Column(length = 20,nullable = false, unique = true)
-	private String login;
-
-	@Column(length = 50,nullable = false)
-	private String senha; 
+	@Embedded
+	private Login login;
 	
 	@OneToOne(cascade = {CascadeType.ALL})
 	private Endereco endereco;
@@ -79,20 +77,12 @@ public class Cadastro {
 		this.telefone = telefone;
 	}
 
-	public String getLogin() {
+	public Login getLogin() {
 		return this.login;
 	}
 
-	public void setLogin(String login) {
+	public void setLogin(Login login) {
 		this.login = login;
-	}
-
-	public String getSenha() {
-		return this.senha;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
 	}
 
 	public Integer getId() {
