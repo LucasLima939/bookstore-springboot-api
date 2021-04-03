@@ -22,6 +22,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "tab_cadastro")
 
@@ -41,11 +45,13 @@ public class Cadastro {
 	}
 	
 	public Cadastro(){}
-	
+
+	@ApiModelProperty(hidden = true)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-
+	
+	@ApiModelProperty(name = "nome")	
 	@Column(length = 50, nullable = false)
 	private String name;
 
@@ -63,11 +69,33 @@ public class Cadastro {
 	@Embedded
 	private Login login;
 	
+	@ApiModelProperty(hidden = true,readOnly = true)
 	@OneToOne(cascade = {CascadeType.ALL})
 	private Endereco endereco;
+	
+	private String cep;
+	
+	@ApiModelProperty(name = "enderecoNumero")	
+	private String numero;
 
 	/* @ElementCollection(fetch = FetchType.LAZY)
 	private List<String> emails = new ArrayList<String>(); */
+
+	public String getCep() {
+		return cep;
+	}
+
+	public void setCep(String cep) {
+		this.cep = cep;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
 
 	public String getTelefone() {
 		return this.telefone;

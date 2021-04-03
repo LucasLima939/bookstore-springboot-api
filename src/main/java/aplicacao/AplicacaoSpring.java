@@ -63,10 +63,17 @@ public class AplicacaoSpring {
 //    				"example@example.com.br", //EMAIL
 //    				"time04", // LOGIN
 //    				"01001111 01001000"), //SENHA
+
+//    				"Time05", // NOME
+//    				"1111111113", //CPF
+//    				"example@example.com.", //EMAIL
+//    				"time05", // LOGIN
+//    				"123456"), //SENHA
+
 //    				"50771-140", // CEP
 //    				"680" // NUMERO
 //        			);
-//>>>>>>> 1375d2173d8f2b791fde174f6b17bd54e9dc1e61
+
         	
         };
     }

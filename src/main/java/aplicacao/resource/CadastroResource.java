@@ -1,25 +1,24 @@
 package aplicacao.resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import aplicacao.model.Login;
+import aplicacao.model.Cadastro;
 import aplicacao.model.Sessao;
-import aplicacao.service.LoginService;
+import aplicacao.service.CadastroService;
 
 @RestController
-@RequestMapping("/login")
-public class LoginResource {
+@RequestMapping("/cadastro")
+public class CadastroResource {
 	@Autowired
-	private LoginService loginService;
+	private CadastroService service;
 	
 	@PostMapping
-	public Sessao login(@RequestBody Login login) {
-		return loginService.logar(login);
-			
+	public Sessao cadastro(@RequestBody Cadastro cadastro) {
+		return service.cadastrarUsuario(cadastro);
 	}
+
 }

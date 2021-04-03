@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import aplicacao.model.Cadastro;
 import aplicacao.model.Endereco;
+import aplicacao.model.Sessao;
 import aplicacao.model.ViaCepModel;
 import aplicacao.repository.CadastroLivroRepositorio;
 import aplicacao.repository.CadastroRepositorio;
@@ -28,19 +29,38 @@ public class CadastroService {
 	private ViaCepService viaCepService;
 	
 	@Autowired
+	private LoginService loginService;
+	
+	@Autowired
 	private PasswordEncoder encoder;
+	
+	public Sessao cadastrarUsuario(Cadastro usuario) {
+		Cadastro cadastro = criarUsuario(usuario, usuario.getCep(), usuario.getNumero());
+		if(cadastro == null)
+			throw new RuntimeException("erro ao criar usuário");
+
+		return loginService.iniciarSessao(cadastro.getLogin().getLogin());
+	}
 	
 	public Cadastro criarUsuario(Cadastro usuario, String cep, String numero) {
 		ViaCepModel model = null;
 		if(cep != null && !cep.isEmpty()) {
 			model = viaCepService.getModelByCep(cep);
+			} else {
+				throw new RuntimeException("cep inválido");
 			}
 		if(model != null) {
 			usuario.setEndereco(new Endereco(model, numero));
-			usuario.getLogin().setSenha(encoder.encode(usuario.getLogin().getSenha()));
+			String senha = null;
+			try {
+				senha = encoder.encode(usuario.getLogin().getSenha());				
+			}catch(Exception e) {
+				throw new RuntimeException("erro ao criptografar: " + e);
+			}
+			usuario.getLogin().setSenha(senha);
 			return cadastroRepository.save(usuario);
         } else {
-        	return null;
+			throw new RuntimeException("erro ao recuperar endereço");
         }
 	}
 	
