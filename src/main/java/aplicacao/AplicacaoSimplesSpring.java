@@ -57,10 +57,10 @@ public class AplicacaoSimplesSpring {
 			locacaoService.agendarLivro(locacao, livroLocacao);
 	}
 	
-	public void editarUsuario(Cadastro usuario) {
-		if(usuario != null && usuario.getId() != null)
-			cadastroService.editarUsuario(usuario);
-	}
+//	public void editarUsuario(Cadastro usuario) {
+//		if(usuario != null && usuario.getId() != null)
+//			cadastroService.editarUsuario(usuario);
+//	}
 	
 	public Cadastro getCadastro(Integer id) {
 		return cadastroService.recuperarUsuario(id);

@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		.antMatchers("/cadastro-livro").permitAll()
 		.antMatchers("/cadastro-livro/find/{id}").permitAll()
-
+		.antMatchers("/locacao").permitAll()
 		.antMatchers("/cadastro").permitAll()
 		.antMatchers("/usuario").authenticated()
 		.anyRequest().authenticated()
