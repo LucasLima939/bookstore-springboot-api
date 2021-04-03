@@ -21,7 +21,7 @@ public class CadastroLivroResource {
 		private CadastroLivroService cadastroLivroService;
 		
 		@PostMapping
-		public CadastroLivro cadastroLivro(@RequestBody @Valid CadastroLivro livro) {
+		public CadastroLivro cadastroLivro(@RequestBody CadastroLivro livro) {
 			return cadastroLivroService.criarLivro(livro);				
 		}
 		

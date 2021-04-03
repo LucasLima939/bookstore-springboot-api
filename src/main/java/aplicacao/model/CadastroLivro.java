@@ -36,7 +36,7 @@ public class CadastroLivro {
 	@NotNull @DecimalMin(value = "0.0", inclusive = false)
 	private Double valorDiaria;
 	
-	@NotNull @NotEmpty
+	@NotNull //@NotEmpty
 	private int numeroExemplares;
 	
 	private int numeroExemplaresReservados;
@@ -48,7 +48,10 @@ public class CadastroLivro {
 		this.numeroExemplares = numeroExemplares;
 	}
 	
-
+	public Integer getId() {
+		return id;
+	}
+	
 	public String getIsbn() {
 		return isbn;
 	}

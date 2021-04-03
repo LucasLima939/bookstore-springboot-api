@@ -3,8 +3,16 @@ package aplicacao.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 public class LivroLocacao {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)	
+	private Integer id;
+
 	private CadastroLivro livro;
 	
 	private Integer quantidade;
@@ -12,6 +20,14 @@ public class LivroLocacao {
 	public LivroLocacao (CadastroLivro livro, Integer quantidade) {
 		this.livro = livro;
 		this.quantidade = quantidade;
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public CadastroLivro getLivro() {

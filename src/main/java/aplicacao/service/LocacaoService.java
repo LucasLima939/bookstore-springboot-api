@@ -32,22 +32,23 @@ public class LocacaoService {
 	@Autowired
 	private CadastroLivroService cadastroLivroService;
 
-	public Locacao agendarLivro(Locacao locacao, List<LivroLocacao> livrosLocacao) throws Exception {
-		Cadastro cadastro = cadastroService.recuperarUsuario(locacao.getCadastro().getId());
+	public Locacao agendarLivro(Cadastro cadastro, Locacao locacao, List<Integer> ids, int quantidade) throws Exception {
+		cadastro = cadastroService.recuperarUsuario(locacao.getCadastro().getId());
+		List <CadastroLivro>livrosLocacao = cadastroLivroService.recuperarLivrosPorListaId(ids);
 		if (cadastro == null) {
 			throw new BibliotecaException("Não é possivel realizar locação sem um cliente");
 		}
-		List<CadastroLivro> livros = new ArrayList();
-		livrosLocacao.forEach(livroLocacao -> {
-			livroLocacao.quantidadeLivro().forEach(livro -> {
-				livros.add(livro);
-			});
-		});
-		if (livros == null) {
+		List<CadastroLivro> livros = cadastroLivroService.recuperarTodosLivros();
+//		livrosLocacao.forEach(livroLocacao -> { //ids
+//			livrosLocacao.quantidadeLivro().forEach(livro -> {
+//				livros.add(livro);
+//			});
+//		});
+		if (livrosLocacao == null) {
 			throw new BibliotecaException("Nenhum livro foi selecionado");
 		}
-		for (int i = 0; i < livrosLocacao.size(); i++) {
-			CadastroLivro livro = livros.get(i);
+		for (int i = 0; i < livros.size(); i++) {
+			livroLocacao.getId = livrosLocacao.get(i);
 			if (livro.getNumeroExemplares() == 0) {
 				throw new LivroSemEstoqueException("Livro sem estoque");
 			}
