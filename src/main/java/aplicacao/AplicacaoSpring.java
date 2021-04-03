@@ -25,11 +25,11 @@ public class AplicacaoSpring {
         return args -> {        	
         	
 //        	application.cadastrarUsuario(new Cadastro(
-//    				"Time04", // NOME
-//    				"1111111112", //CPF
-//    				"example@example.com.br", //EMAIL
-//    				"time04", // LOGIN
-//    				"01001111 01001000"), //SENHA
+//    				"Time05", // NOME
+//    				"1111111113", //CPF
+//    				"example@example.com.", //EMAIL
+//    				"time05", // LOGIN
+//    				"123456"), //SENHA
 //    				"50771-140", // CEP
 //    				"680" // NUMERO
 //        			);

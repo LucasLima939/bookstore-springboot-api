@@ -36,15 +36,23 @@ public class LoginService {
 		boolean passwordMatches = encoder.matches(login.getSenha(), cadastro.getLogin().getSenha());
 		if(!passwordMatches) {
 			throw new RuntimeException("Login ou senha incorretos");
-		} 
+		}
 		
+		return iniciarSessao(cadastro.getLogin().getLogin());
+		
+		
+	}
+	
+	public Sessao iniciarSessao(String login) {
+		if(login == null)
+			throw new RuntimeException("login vazio, não é possível iniciar sessão");
 		Sessao sessao = new Sessao(
-				cadastro.getLogin().getLogin(),
+				login,
 				new Date(System.currentTimeMillis()),
 				new Date(System.currentTimeMillis() + JwtConstants.TOKEN_EXPIRATION)
 				);
 		sessao.setToken(JwtConstants.PREFIX + getJwtToken(sessao));
-		return sessao;
+		return sessao;	
 	}
 	
 	private String getJwtToken(Sessao sessao) {
