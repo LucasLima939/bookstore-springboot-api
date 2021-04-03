@@ -22,9 +22,13 @@ import javax.persistence.TemporalType;
 @Table(name = "tab_locacao")
 public class Locacao {
 	
-	public Locacao(Cadastro cadastro, List<CadastroLivro> livros){
+	public Locacao(Cadastro cadastro, Date dataAgendamento){
 		this.cadastro = cadastro;
-		this.livros = livros;
+		this.dataAgendamento = dataAgendamento;
+	}
+	
+	public Locacao(Date dataAgendamento){
+		this.dataAgendamento = dataAgendamento;
 	}
 
 	@Id
@@ -53,14 +57,6 @@ public class Locacao {
 
 	@Enumerated(EnumType.STRING)
 	private StatusLocacao status = StatusLocacao.RESERVADA;
-	
-	public Integer getId() {
-		return id;
-	}
-	
-	public void setId(Integer id) {
-		this.id = id;
-	}
 	
 	public Cadastro getCadastro() {
 		return cadastro;
