@@ -2,6 +2,7 @@ package aplicacao.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,11 +23,20 @@ public class CadastroLivroService {
 	
 	
 	public CadastroLivro criarLivro(CadastroLivro livro) {
-        return livroRepository.save(livro);		
+		try {
+	        return livroRepository.save(livro);			
+		}catch(Exception e) {
+			System.out.println(e);
+			throw new RuntimeException("erro ao cadastrar livro");	 
+			
+		}
 	}
 	
 	public CadastroLivro recuperarLivro(Integer id){
-		return livroRepository.findById(id).orElse(null);
+		CadastroLivro livro = livroRepository.findById(id).orElse(null);
+		if(livro == null)
+				throw new NoSuchElementException("livro não encontrado");	
+		return livro;
 	}
 	
 	public List<CadastroLivro> recuperarTodosLivros() {

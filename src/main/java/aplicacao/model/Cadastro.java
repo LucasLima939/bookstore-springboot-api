@@ -80,8 +80,8 @@ public class Cadastro {
 	
 	private String cep;
 	
-	@ApiModelProperty(name = "enderecoNumero")	
-	private String numero;
+	@ApiModelProperty(name = "enderecoNumeroResidencia")	
+	private String enderecoNumeroResidencia;
 
 	/* @ElementCollection(fetch = FetchType.LAZY)
 	private List<String> emails = new ArrayList<String>(); */
@@ -95,11 +95,11 @@ public class Cadastro {
 	}
 
 	public String getNumero() {
-		return numero;
+		return enderecoNumeroResidencia;
 	}
 
 	public void setNumero(String numero) {
-		this.numero = numero;
+		this.enderecoNumeroResidencia = numero;
 	}
 
 	public String getTelefone() {
