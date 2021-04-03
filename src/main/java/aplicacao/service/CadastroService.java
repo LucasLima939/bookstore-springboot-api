@@ -3,6 +3,8 @@ package aplicacao.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,7 +65,17 @@ public class CadastroService {
 	}
 	
 	public Cadastro recuperarUsuario(Integer id){
-		return cadastroRepository.findById(id).orElse(null);
+		Cadastro cadastro = cadastroRepository.findById(id).orElse(null);
+		if(cadastro == null)
+			throw new RuntimeException("erro ao recuperar usuário");
+		return cadastro;
+	}
+	
+	public Cadastro recuperarUsuarioPorLogin(String login){
+		Cadastro cadastro = cadastroRepository.findByLoginLogin(login);
+		if(cadastro == null)
+			throw new RuntimeException("erro ao recuperar usuário, gere um novo token");
+		return cadastro;
 	}
 	
 	public List<Cadastro> recuperarTodosUsuarios() {
@@ -78,9 +90,11 @@ public class CadastroService {
 		return todosUsuarios;
 	}
 	
-	public Cadastro editarUsuario(Cadastro cadastro){
-		return cadastroRepository.save(cadastro);
-	}
+//	public Cadastro editarUsuario(Cadastro cadastro, Integer id){
+//		if(cadastroRepository.findById(id).orElse(null) == null)
+//			throw new RuntimeErrorException("Usuário não localizado");
+//		return cadastroRepository.save(cadastro);
+//	}
 	
 	public Boolean deletarUsuario(Integer id) {
 		try {

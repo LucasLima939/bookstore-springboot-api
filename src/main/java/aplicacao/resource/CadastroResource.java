@@ -27,7 +27,7 @@ public class CadastroResource {
 	private CadastroService service;
 	
 	@PostMapping
-	public ResponseEntity cadastro(@Valid @RequestBody Cadastro cadastro) {
+	public ResponseEntity cadastro(@RequestBody Cadastro cadastro) {
 		try {
 			Sessao sessao = service.cadastrarUsuario(cadastro);
 		    return new ResponseEntity<>(sessao, HttpStatus.OK); 			

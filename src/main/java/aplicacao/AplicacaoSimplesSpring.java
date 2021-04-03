@@ -46,10 +46,10 @@ public class AplicacaoSimplesSpring {
 					); // CEP
 	}
 	
-	public void editarUsuario(Cadastro usuario) {
-		if(usuario != null && usuario.getId() != null)
-			cadastroService.editarUsuario(usuario);
-	}
+//	public void editarUsuario(Cadastro usuario) {
+//		if(usuario != null && usuario.getId() != null)
+//			cadastroService.editarUsuario(usuario);
+//	}
 	
 	
 }

@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(SWAGGER_WHITELIST).permitAll()
 		.antMatchers("/login").permitAll()
 		.antMatchers("/cadastro").permitAll()
+		.antMatchers("/usuario").authenticated()
 		.anyRequest().authenticated()
 		.and()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
