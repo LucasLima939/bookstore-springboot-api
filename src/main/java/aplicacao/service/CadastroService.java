@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +32,9 @@ public class CadastroService {
 	private PasswordEncoder encoder;
 	
 	public Sessao cadastrarUsuario(Cadastro usuario) {
-		Cadastro cadastro = criarUsuario(usuario, usuario.getCep(), usuario.getNumero());
-		if(cadastro == null)
-			throw new RuntimeException("erro ao criar usuário");
+		Cadastro cadastro = null;
+		cadastro = criarUsuario(usuario, usuario.getCep(), usuario.getNumero());
+		
 
 		return loginService.iniciarSessao(cadastro.getLogin().getLogin());
 	}
@@ -50,11 +51,12 @@ public class CadastroService {
 			String senha = null;
 			try {
 				senha = encoder.encode(usuario.getLogin().getSenha());				
-			}catch(Exception e) {
-				throw new RuntimeException("erro ao criptografar: " + e);
+			
+				usuario.getLogin().setSenha(senha);
+				return cadastroRepository.save(usuario);
+			}catch (Exception e) {
+				throw new RuntimeException("falha ao cadastrar usuário, verifique os dados e tente novamente");				
 			}
-			usuario.getLogin().setSenha(senha);
-			return cadastroRepository.save(usuario);
         } else {
 			throw new RuntimeException("erro ao recuperar endereço");
         }

@@ -21,6 +21,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -54,10 +57,12 @@ public class Cadastro {
 	@ApiModelProperty(name = "nome")	
 	@Column(length = 50, nullable = false)
 	private String name;
-
+	
+	//@Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres") 
 	@Column(length = 11,nullable = false,unique = true)
 	private String cpf;
-
+	
+	
 	@Column(length = 50,nullable = false,unique = true)
 	private String email;
 
