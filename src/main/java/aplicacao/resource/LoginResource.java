@@ -1,12 +1,15 @@
 package aplicacao.resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import aplicacao.model.ErrorResponse;
 import aplicacao.model.Login;
 import aplicacao.model.Sessao;
 import aplicacao.service.LoginService;
@@ -18,8 +21,16 @@ public class LoginResource {
 	private LoginService loginService;
 	
 	@PostMapping
-	public Sessao login(@RequestBody Login login) {
-		return loginService.logar(login);
-			
+	public ResponseEntity login(@RequestBody Login login) {
+		try { 
+			Sessao sessao = loginService.logar(login);
+		    return new ResponseEntity<>(sessao, HttpStatus.OK); 			
+		}catch(Exception e) {
+	        ErrorResponse errorResponse = new ErrorResponse();
+			errorResponse.setMessage(e.getMessage());
+			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
+			
+	
 }

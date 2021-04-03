@@ -33,6 +33,9 @@ public class LoginService {
 		}
 		
 		Cadastro cadastro = cadastroRepository.findByLoginLogin(login.getLogin());
+		if(cadastro == null) {
+			throw new RuntimeException("Login não existe");
+		}
 		boolean passwordMatches = encoder.matches(login.getSenha(), cadastro.getLogin().getSenha());
 		if(!passwordMatches) {
 			throw new RuntimeException("Login ou senha incorretos");
