@@ -58,14 +58,6 @@ public class Locacao {
 	@Enumerated(EnumType.STRING)
 	private StatusLocacao status = StatusLocacao.RESERVADA;
 	
-	public Integer getId() {
-		return id;
-	}
-	
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	
 	public Cadastro getCadastro() {
 		return cadastro;
 	}

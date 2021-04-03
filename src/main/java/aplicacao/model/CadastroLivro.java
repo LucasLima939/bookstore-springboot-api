@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "tab_cadastro_livro")
@@ -23,13 +26,17 @@ public class CadastroLivro {
 	private Integer id;
 	
 	@Column(length = 50, nullable = false)
+	@NotNull @NotEmpty
 	private String isbn;
 	
 	@Column(length = 100)
+	@NotNull @NotEmpty
 	private String titulo;
 	
+	@NotNull @DecimalMin(value = "0.0", inclusive = false)
 	private Double valorDiaria;
 	
+	@NotNull @NotEmpty
 	private int numeroExemplares;
 	
 	private int numeroExemplaresReservados;
@@ -41,14 +48,7 @@ public class CadastroLivro {
 		this.numeroExemplares = numeroExemplares;
 	}
 	
-//	public Integer getId() {
-//		return id;
-//	}
-//	
-//	public void setId(Integer id) {
-//		this.id = id;
-//	}
-	
+
 	public String getIsbn() {
 		return isbn;
 	}
