@@ -118,13 +118,18 @@
 	        <artifactId>javax.el</artifactId>
 	        <version>3.0.0</version>
 	     </dependency>
-		
-		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.reflectoring/sqs-starter -->
+		<dependency>
+		    <groupId>io.reflectoring</groupId>
+		    <artifactId>sqs-starter</artifactId>
+		    <version>0.0.7</version>
+		</dependency>
 	</dependencies>
+	
 
 	<build>
 		<plugins>

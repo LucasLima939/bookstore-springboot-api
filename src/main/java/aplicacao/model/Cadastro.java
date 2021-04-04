@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -48,6 +49,7 @@ public class Cadastro {
 	}
 	
 	public Cadastro(){}
+	
 
 	@ApiModelProperty(hidden = true)
 	@Id
@@ -56,19 +58,22 @@ public class Cadastro {
 	
 	@ApiModelProperty(name = "nome")	
 	@Column(length = 50, nullable = false)
+	@NotNull @Size(min = 1, max = 50, message = "campo NOME obrigatório e menor que 50 caracteres")
 	private String name;
 	
-	//@Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres") 
 	@Column(length = 11,nullable = false,unique = true)
+	@Size(min = 11, max = 11, message = "CPF deve ter 11 caracteres") 
 	private String cpf;
 	
 	
 	@Column(length = 50,nullable = false,unique = true)
+	@Size(min = 1, max = 50, message = "campo EMAIL obrigatório e menor que 50 caracteres")
 	private String email;
 
 	/* @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "cadastro")
 	private List<Telefone> telefones = new ArrayList<Telefone>();; */
 	@Column(length = 50)
+	@Size(max = 20, message = "campo TELEFONE deve ser menor que 20 caracteres")
 	private String telefone;
 
 	@Embedded
@@ -82,6 +87,11 @@ public class Cadastro {
 	
 	@ApiModelProperty(name = "enderecoNumeroResidencia")	
 	private String enderecoNumeroResidencia;
+	
+	@PrePersist
+	private void guardarCadastroNoEndereco() {
+		this.endereco.setCadastro(this);
+	}
 
 	/* @ElementCollection(fetch = FetchType.LAZY)
 	private List<String> emails = new ArrayList<String>(); */

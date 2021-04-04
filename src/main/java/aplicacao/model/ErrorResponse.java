@@ -1,6 +1,12 @@
 package aplicacao.model;
 
 public class ErrorResponse {
+	
+	public ErrorResponse() {}
+	
+	public ErrorResponse(String message) {
+		this.message = message;
+	}
     private String message;
 
     public String getMessage() {

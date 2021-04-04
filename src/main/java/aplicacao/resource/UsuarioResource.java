@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.google.gson.Gson;
 
@@ -43,10 +44,8 @@ public class UsuarioResource {
 			JwtToken jwtPayload = new Gson().fromJson(payload, JwtToken.class);
 			Cadastro cadastro = service.recuperarUsuarioPorLogin(jwtPayload.getSub());
 		    return new ResponseEntity<>(cadastro, HttpStatus.OK); 			
-		}catch(Exception e) {
-	        ErrorResponse errorResponse = new ErrorResponse();
-			errorResponse.setMessage(e.getMessage());
-			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());			
 		}
 	}
 }

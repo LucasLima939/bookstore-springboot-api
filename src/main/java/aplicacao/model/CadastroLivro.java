@@ -9,6 +9,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
+import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "tab_cadastro_livro")
@@ -23,22 +29,27 @@ public class CadastroLivro {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)	
+	@JsonProperty(access = Access.WRITE_ONLY)	
 	private Integer id;
 	
 	@Column(length = 50, nullable = false)
-	@NotNull @NotEmpty
+	@Size(max = 50, message = "Tamanho máximo ISBN: 50")
 	private String isbn;
 	
 	@Column(length = 100)
-	@NotNull @NotEmpty
+	@Size(max = 50, message = "Tamanho máximo TITULO: 100")
 	private String titulo;
 	
-	@NotNull @DecimalMin(value = "0.0", inclusive = false)
+
+	@Column(nullable = false)	
+	@NotNull(message = "Defina um valor para a DIÁRIA do livro")
 	private Double valorDiaria;
-	
-	@NotNull //@NotEmpty
+
+	@Column(nullable = false)	
+	@NotNull(message = "Defina uma quantidade de EXEMPLARES")
 	private int numeroExemplares;
 	
+	@ApiModelProperty(hidden = true)	
 	private int numeroExemplaresReservados;
 	
 	public CadastroLivro(String isbn, String titulo, Double valorDiaria, int numeroExemplares) {

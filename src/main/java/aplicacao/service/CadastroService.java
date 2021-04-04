@@ -2,19 +2,27 @@ package aplicacao.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import aplicacao.model.Cadastro;
+import aplicacao.model.CadastroLivro;
 import aplicacao.model.Endereco;
 import aplicacao.model.Sessao;
 import aplicacao.model.ViaCepModel;
@@ -36,10 +44,22 @@ public class CadastroService {
 	
 	@Autowired
 	private PasswordEncoder encoder;
+	 
+	private Validator validator;
+
+	public CadastroService()
+    {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
 	
 	public Sessao cadastrarUsuario(Cadastro usuario) {
-		Cadastro cadastro = null;
-		cadastro = criarUsuario(usuario, usuario.getCep(), usuario.getNumero());
+	    Set<ConstraintViolation<Cadastro>> violations = validator.validate(usuario);
+	    if(!violations.isEmpty()) {
+			String s = violations.stream().map(e -> e.getMessage()).collect(Collectors.joining(" ; "));
+	    	throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, s);
+	    }
+	    Cadastro cadastro = criarUsuario(usuario, usuario.getCep(), usuario.getNumero());
 		
 
 		return loginService.iniciarSessao(cadastro.getLogin().getLogin());
@@ -50,7 +70,7 @@ public class CadastroService {
 		if(cep != null && !cep.isEmpty()) {
 			model = viaCepService.getModelByCep(cep);
 			} else {
-				throw new RuntimeException("cep inválido");
+				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "cep inválido");
 			}
 		if(model != null) {
 			usuario.setEndereco(new Endereco(model, numero));
@@ -61,51 +81,52 @@ public class CadastroService {
 				usuario.getLogin().setSenha(senha);
 				return cadastroRepository.save(usuario);
 			}catch (Exception e) {
-				throw new RuntimeException("falha ao cadastrar usuário, verifique os dados e tente novamente");				
+				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "falha ao cadastrar usuário");	
 			}
         } else {
-			throw new RuntimeException("erro ao recuperar endereço");
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "erro ao recuperar endereço");
         }
 	}
 	
 	public Cadastro recuperarUsuario(Integer id){
 		Cadastro cadastro = cadastroRepository.findById(id).orElse(null);
 		if(cadastro == null)
-			throw new RuntimeException("erro ao recuperar usuário");
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "usuário não localizado");
 		return cadastro;
 	}
 	
 	public Cadastro recuperarUsuarioPorLogin(String login){
 		Cadastro cadastro = cadastroRepository.findByLoginLogin(login);
 		if(cadastro == null)
-			throw new RuntimeException("erro ao recuperar usuário, gere um novo token");
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "erro ao recuperar usuário, gere um novo token");
 		return cadastro;
 	}
 	
 	public List<Cadastro> recuperarTodosUsuarios() {
 		List<Cadastro> todosUsuarios = new ArrayList<Cadastro>();
-		cadastroRepository.findAll().forEach(todosUsuarios::add);
+		try {
+			cadastroRepository.findAll().forEach(todosUsuarios::add);
+		}catch(Exception e) {
+			throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao recuperar livros");			
+		}
 		return todosUsuarios;
 	}
 	
 	public List<Cadastro> recuperarUsuariosPorListaId(List<Integer> ids){
 		List<Cadastro> todosUsuarios = new ArrayList<Cadastro>();
-		cadastroRepository.findAllById(ids).forEach(todosUsuarios::add);
+		try {
+			cadastroRepository.findAllById(ids).forEach(todosUsuarios::add);
+		}catch(Exception e) {
+			throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao recuperar livros");			
+		}
 		return todosUsuarios;
 	}
 	
-//	public Cadastro editarUsuario(Cadastro cadastro, Integer id){
-//		if(cadastroRepository.findById(id).orElse(null) == null)
-//			throw new RuntimeErrorException("Usuário não localizado");
-//		return cadastroRepository.save(cadastro);
-//	}
-	
-	public Boolean deletarUsuario(Integer id) {
+	public void deletarUsuario(Integer id) {
 		try {
-		cadastroRepository.deleteById(id);
-		return true;
-		} catch (IllegalArgumentException e) {
-			return false;
+			cadastroRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "erro ao recuperar usuário, gere um novo token");
 		}
 	}
 	
