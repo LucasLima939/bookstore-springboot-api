@@ -26,11 +26,15 @@ import aplicacao.model.CadastroLivro;
 import aplicacao.model.ErrorResponse;
 import aplicacao.model.Sessao;
 import aplicacao.service.CadastroLivroService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 @RestController
 @RequestMapping("/livros")
+@Api(value = "Cadastro livro", description = "Cadastro de livro", tags = { "Cadastro livro" })
 public class CadastroLivroResource {
 	 
     	private Validator validator;
@@ -44,6 +48,7 @@ public class CadastroLivroResource {
 		@Autowired
 		private CadastroLivroService cadastroLivroService;
 		
+		@ApiOperation(value="Criar livro", tags = { "Cadastro livro" })
 		@PostMapping
 		public ResponseEntity cadastroLivro(@RequestBody CadastroLivro livro) {
 			try {
@@ -54,6 +59,7 @@ public class CadastroLivroResource {
 			}
 		}
 		
+		@ApiOperation(value="Listar livros cadastrados", tags = { "Cadastro livro" })
 		@GetMapping
 		public ResponseEntity recuperarTodosOsLivros() {			
 			try {
@@ -64,6 +70,7 @@ public class CadastroLivroResource {
 			}
 		}
 		
+		@ApiOperation(value="Pesquisar livro", tags = { "Cadastro livro" })
 		@GetMapping(path = "/{id}")
 		public ResponseEntity get(@PathVariable("id") Integer id) {								
 			try {
@@ -74,6 +81,7 @@ public class CadastroLivroResource {
 			}
 		}
 		
+		@ApiOperation(value="Editar livro", tags = { "Cadastro livro" })
 		@PutMapping(path = "/{id}")
 		public ResponseEntity editar(@PathVariable("id") Integer id, @RequestBody CadastroLivro livro) {
 			try {
@@ -84,6 +92,7 @@ public class CadastroLivroResource {
 			}
 		}
 		
+		@ApiOperation(value="Deletar livro", tags = { "Cadastro livro" })
 		@DeleteMapping(path = "/{id}")
 		public ResponseEntity deletar(@PathVariable("id") Integer id) {
 			try {

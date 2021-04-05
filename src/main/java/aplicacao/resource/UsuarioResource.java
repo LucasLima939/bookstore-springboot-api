@@ -22,9 +22,12 @@ import aplicacao.model.ErrorResponse;
 import aplicacao.model.JwtToken;
 import aplicacao.model.ViaCepModel;
 import aplicacao.service.CadastroService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/usuarios")
+@Api(value = "Usuario", description = "Consulta usuario", tags = { "Usuario" })
 public class UsuarioResource {
 
 	@Autowired
@@ -36,6 +39,7 @@ public class UsuarioResource {
 //	}
 	
 	@GetMapping(path = "/me")
+	@ApiOperation(value="Consultar usuario", tags = { "Usuario" })
 	public ResponseEntity get(@RequestHeader (name="Authorization") String token) {
 		try {
 			Cadastro cadastro = service.recuperarUsuarioPorLogin(recoverLoginFromToken(token));
@@ -47,6 +51,7 @@ public class UsuarioResource {
 	
 
 	@PutMapping(path = "/me")
+	@ApiOperation(value="Editar usuario", tags = { "Usuario" })
 	public ResponseEntity editar(@RequestHeader (name="Authorization") String token, @RequestBody Cadastro cadastro) {
 		try {
 			Cadastro usuario = service.editarUsuarioLogado(recoverLoginFromToken(token), cadastro);

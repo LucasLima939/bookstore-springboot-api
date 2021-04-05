@@ -25,10 +25,13 @@ import aplicacao.model.LivroLocacao;
 import aplicacao.model.Locacao;
 import aplicacao.service.CadastroService;
 import aplicacao.service.LocacaoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import jdk.jfr.BooleanFlag;
 
 @RestController
 @RequestMapping("/locacao")
+@Api(value = "Locação", description = "Realiza locação", tags = { "Locação" })
 public class LocacaoResource {
 	
 	@Autowired
@@ -38,6 +41,7 @@ public class LocacaoResource {
 	private CadastroService service;
 	
 	@PostMapping
+	@ApiOperation(value="Agendar locação", tags = { "Locação" })
 	public ResponseEntity agendarLocacao(@RequestHeader (name="Authorization") String token, @RequestBody Locacao locacao) throws Exception {	
 		try {	
 		    return new ResponseEntity<>(locacaoService.criarLocacao(tokenToCadastro(token), locacao), HttpStatus.OK); 			
@@ -47,6 +51,7 @@ public class LocacaoResource {
 	}
 	
 	@GetMapping(path = "/{id}")
+	@ApiOperation(value="Pesquisar locação", tags = { "Locação" })
 	public ResponseEntity recuperarLocacao(@RequestHeader(name="Authorization") String token, @PathVariable("id") Integer id) {
 		try {
 		    return new ResponseEntity<>(locacaoService.localizarLocacao(id, tokenToCadastro(token)), HttpStatus.OK); 			
@@ -56,6 +61,7 @@ public class LocacaoResource {
 	}
 	
 	@PostMapping(path = "/{id}/reservar")
+	@ApiOperation(value="Reservar livros", tags = { "Locação" })
 	public ResponseEntity reservarLivros(@RequestHeader (name="Authorization") String token, @RequestBody List<LivroLocacao> livros, @PathVariable("id") Integer id) {
 		try {
 		    return new ResponseEntity<>(locacaoService.retirarLivros(id, tokenToCadastro(token), livros), HttpStatus.OK); 			
@@ -65,6 +71,7 @@ public class LocacaoResource {
 	}
 	
 	@PostMapping(path = "/{id}/devolver")
+	@ApiOperation(value="Devolver livros", tags = { "Locação" })
 	public ResponseEntity devolverLivros(@RequestHeader (name="Authorization") String token, @RequestBody List<Integer> livrosIds, @PathVariable("id") Integer id) {
 		try {
 		    return new ResponseEntity<>(locacaoService.entregarLivros(id, tokenToCadastro(token), livrosIds), HttpStatus.OK); 			

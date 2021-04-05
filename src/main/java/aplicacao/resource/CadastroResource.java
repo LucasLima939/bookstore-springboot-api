@@ -19,13 +19,17 @@ import aplicacao.model.Cadastro;
 import aplicacao.model.ErrorResponse;
 import aplicacao.model.Sessao;
 import aplicacao.service.CadastroService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/cadastro")
+@Api(value = "Cadastro", description = "Cadastro de usuario", tags = { "Cadastro" })
 public class CadastroResource {
 	@Autowired
 	private CadastroService service;
 	
+	@ApiOperation(value="Criar Cadastro", tags = { "Cadastro" })
 	@PostMapping
 	public ResponseEntity cadastro(@RequestBody Cadastro cadastro) {
 		try {

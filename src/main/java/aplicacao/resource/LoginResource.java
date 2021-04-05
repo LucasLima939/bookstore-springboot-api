@@ -14,13 +14,17 @@ import aplicacao.model.ErrorResponse;
 import aplicacao.model.Login;
 import aplicacao.model.Sessao;
 import aplicacao.service.LoginService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/login")
+@Api(value = "Login", description = "Efetua login", tags = { "Login" })
 public class LoginResource {
 	@Autowired
 	private LoginService loginService;
 	
+	@ApiOperation(value="Realizar login", tags = { "Login" })
 	@PostMapping
 	public ResponseEntity login(@RequestBody Login login) {
 		try { 
