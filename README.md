@@ -1,23 +1,24 @@
 # Accenture Java Project
 Construção de uma API biblioteca com cadastro de usuário, livros e locações. A API pode ser acessada em https://apirest-biblioteca.herokuapp.com/swagger-ui.html
 
-Grupo na Minha Máquina Funciona
+# Grupo na Minha Máquina Funciona
 Lucas Amaral
 Lucas Lima
 Mauricio Santos
 
-Estrutura do Projeto
+# Estrutura do Projeto
 As classes do projeto foram divididas em pacotes de acordo com suas responsabilidades:
 
-Model: os modelos das classes de objetos que usamos no sistema
-Repository: onde definimos o JPA para acessar os dados do BD
-Service: onde estão salvas as regras de negócio para manipulação dos Models
-Resource: construção da API por meio da definição dos endpoints
-Exception: onde definimos nossas exceções
-Doc: onde definimos as configurações do Swagger para documentar a API
-Security: onde definimos as configurações de segurança do Spring Security e JWT
-Util: onde definimos o gerador da chave de segurança
-Cadastro
+ - Model: os modelos das classes de objetos que usamos no sistema
+ - Repository: onde definimos o JPA para acessar os dados do BD
+ - Service: onde estão salvas as regras de negócio para manipulação dos Models
+ - Resource: construção da API por meio da definição dos endpoints
+ - Exception: onde definimos nossas exceções
+ - Doc: onde definimos as configurações do Swagger para documentar a API
+ - Security: onde definimos as configurações de segurança do Spring Security e JWT
+ - Util: onde definimos o gerador da chave de segurança
+
+# Cadastro
 O model tem os atributos:
 
 Id
