@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "tab_endereco")
 public class Endereco {
@@ -29,6 +31,7 @@ public class Endereco {
 	}
 	
 	@OneToOne
+	@ApiModelProperty(hidden = true)
 	Cadastro cadastro;	
     
 	@Id

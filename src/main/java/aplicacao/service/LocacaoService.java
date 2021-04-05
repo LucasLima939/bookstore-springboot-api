@@ -5,11 +5,21 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import aplicacao.exception.BibliotecaException;
 import aplicacao.exception.LivroSemEstoqueException;
@@ -31,59 +41,163 @@ public class LocacaoService {
 
 	@Autowired
 	private CadastroLivroService cadastroLivroService;
+	 
+	private Validator validator;
 
-	public Locacao agendarLivro(Cadastro cadastro, Locacao locacao, List<Integer> ids, int quantidade) throws Exception {
-		cadastro = cadastroService.recuperarUsuario(locacao.getCadastro().getId());
-		List <CadastroLivro>livrosLocacao = cadastroLivroService.recuperarLivrosPorListaId(ids);
-		if (cadastro == null) {
-			throw new BibliotecaException("Não é possivel realizar locação sem um cliente");
-		}
-		List<CadastroLivro> livros = cadastroLivroService.recuperarTodosLivros();
-//		livrosLocacao.forEach(livroLocacao -> { //ids
-//			livrosLocacao.quantidadeLivro().forEach(livro -> {
-//				livros.add(livro);
-//			});
-//		});
-		if (livrosLocacao == null) {
-			throw new BibliotecaException("Nenhum livro foi selecionado");
-		}
-		for (int i = 0; i < livros.size(); i++) {
-			livroLocacao.getId = livrosLocacao.get(i);
-			if (livro.getNumeroExemplares() == 0) {
-				throw new LivroSemEstoqueException("Livro sem estoque");
+	public LocacaoService()
+    {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+	
+
+	public Locacao criarLocacao(Cadastro cadastro, Locacao locacao) throws Exception {
+		try {
+			locacao.setCadastro(cadastro.getId());
+			if(!locacao.getLivros().isEmpty()) {
+				validarLivros(locacao.getLivros());
+				atualizarValorLocacao(locacao);
 			}
-			livro.setNumeroExemplares(livro.getNumeroExemplares() - 1);
-			livro.setNumeroExemplaresReservados(livro.getNumeroExemplaresReservados() + 1);
+			return locacaoRepository.save(locacao);			
+		}catch(Exception e) {
+	    	throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao agendar locação");			
 		}
-		locacao.setCadastro(cadastro);
-		locacao.setLivros(livros);
-		locacao.setDataAgendamento(new Date());
-		return locacaoRepository.save(locacao);
+	}
+	
+	private void validarLivros(List<LivroLocacao> livros){
+		Set<ConstraintViolation<LivroLocacao>> violations = new HashSet<ConstraintViolation<LivroLocacao>>();
+		for(LivroLocacao l:livros) {
+			violations.addAll(validator.validate(l));			
+		}
+	    if(!violations.isEmpty()) {
+			String s = violations.stream().map(e -> e.getMessage()).collect(Collectors.joining(" ; "));
+	    	throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, s);
+	    }
+		
 	}
 
-	public Locacao retirarLivros(Locacao locacao) {
-		StatusLocacao status = StatusLocacao.EFETIVADA;
-		locacao.setDataRetirada(new Date());
-		return locacaoRepository.save(locacao);
+	
+	private void validarLocacao(Locacao locacao){
+	    Set<ConstraintViolation<Locacao>> violations = validator.validate(locacao);
+	    if(!violations.isEmpty()) {
+			String s = violations.stream().map(e -> e.getMessage()).collect(Collectors.joining(" ; "));
+	    	throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, s);
+	    }
+	}
+	
+	public Locacao localizarLocacao(Integer id, Cadastro cadastro) {
+		Locacao locacao = locacaoRepository.findById(id).orElse(null);
+		if(locacao == null)
+	    	throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Locação não localizada");
+		if(locacao.getCadastro() != cadastro.getId())
+	    	throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Você não possui autorização para alterar essa locação");
+		return locacao;		
 	}
 
-	public Locacao finalizarLocacao(Locacao locacao) {
-		List<CadastroLivro> livros = locacao.getLivros();
-		double valorTotal = 0;
-		LocalDate hoje = LocalDate.now();
-		LocalDate retiradaConvert = locacao.getDataRetirada().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		Double numeroDiarias = (double) ChronoUnit.DAYS.between(retiradaConvert, hoje);
-		for (int i = 0; i < livros.size(); i++) {
-			CadastroLivro livro = livros.get(i);
-			double valorLocacao = numeroDiarias * livro.getValorDiaria();
-			valorTotal += valorLocacao;
-			livro.setNumeroExemplares(livro.getNumeroExemplares() + 1);
-			livro.setNumeroExemplaresReservados(livro.getNumeroExemplaresReservados() - 1);
+	public Locacao retirarLivros(Integer locacaoId, Cadastro cadastro, List<LivroLocacao> livros) {
+		if(livros.isEmpty())
+	    	throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Insira livros na lista");
+		Locacao locacao = localizarLocacao(locacaoId, cadastro);
+			
+		validarLivros(livros);
+		verificarDisponibilidadeLivros(livros);
+				
+		locacao.setStatus(StatusLocacao.EFETIVADA);
+		locacao.inserirLivros(livros);
+		atualizarValorLocacao(locacao);
+		return salvarLocacao(locacao);
+	}
+	
+	private void verificarDisponibilidadeLivros(List<LivroLocacao> livros) {
+		List<Integer> livrosIds = livros.stream().map(l -> l.getId()).collect(Collectors.toList());
+		List<CadastroLivro> cadastroLivros = cadastroLivroService.recuperarLivrosPorListaId(livrosIds);
+		for(LivroLocacao l:livros) {
+			CadastroLivro cadastroLivro = cadastroLivros.stream().filter(livro -> livro.getId().equals(l.getId())).findFirst().orElse(null);
+			boolean podeLocar = l.getQuantidade() <= cadastroLivro.getNumeroExemplaresDisponivel();
+			if(podeLocar) {
+				alterarDisponibilidadeLivroReserva(cadastroLivro, l);
+			} else {
+		    	throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Quantidade de livros exede a disponível para o livro: " + l.getId());				
+			}
 		}
+	}
+	
+	private void alterarDisponibilidadeLivroReserva(CadastroLivro cadastroLivro, LivroLocacao l) {
+		Integer valorAtualizadoExemplaresReservado = cadastroLivro.getNumeroExemplaresReservados() + l.getQuantidade();
+		Integer valorAtualizadoExemplaresDisponivel = cadastroLivro.getNumeroExemplaresDisponivel() - l.getQuantidade();
+			cadastroLivro.setNumeroExemplaresReservados(valorAtualizadoExemplaresReservado);
+			cadastroLivro.setNumeroExemplaresDisponivel(valorAtualizadoExemplaresDisponivel);
+		cadastroLivroService.editarLivro(cadastroLivro, cadastroLivro.getId());		
+	}
+	
+	private void alterarDisponibilidadeLivroDevolucao(CadastroLivro cadastroLivro, LivroLocacao l) {
+		Integer valorAtualizadoExemplaresReservado = cadastroLivro.getNumeroExemplaresReservados() - l.getQuantidade();
+		Integer valorAtualizadoExemplaresDisponivel = cadastroLivro.getNumeroExemplaresDisponivel() + l.getQuantidade();
+			cadastroLivro.setNumeroExemplaresReservados(valorAtualizadoExemplaresReservado);
+			cadastroLivro.setNumeroExemplaresDisponivel(valorAtualizadoExemplaresDisponivel);
+		cadastroLivroService.editarLivro(cadastroLivro, cadastroLivro.getId());		
+	}
+
+
+	private Locacao salvarLocacao(Locacao locacao) {
+		try {
+			return locacaoRepository.save(locacao);			
+		}catch(Exception e) {
+	    	throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Falha ao atualizar locação");			
+		}
+	}
+	
+	public String entregarLivros(Integer locacaoId, Cadastro cadastro, List<Integer> livrosIds) {
+		Locacao locacao = localizarLocacao(locacaoId, cadastro);
+		locacao.getLivros().forEach(livro -> {
+			if(livrosIds.contains(livro.getId())) {
+				livro.setDataEntrega(new Date(System.currentTimeMillis()));
+				CadastroLivro cadastroLivro = cadastroLivroService.recuperarLivro(livro.getId());
+				alterarDisponibilidadeLivroDevolucao(cadastroLivro, livro);
+			}
+		});
+		atualizarValorLocacao(locacao);
+		if(!verificarLivrosPendentes(locacao)) {
+			return finalizarLocacao(locacao);
+		} else {
+			salvarLocacao(locacao);
+			return "Livro(s) entregues!";
+		}
+	}
+	
+	private void atualizarValorLocacao(Locacao locacao) {
+		double valorTotal = 0.0;
+		for(LivroLocacao l:locacao.getLivros()) {
+			if(l.getDataEntrega() != null) {
+			LocalDate hoje = LocalDate.now();
+			LocalDate retiradaConvert = l.getDataRetirada().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			Double numeroDiarias = (double) ChronoUnit.DAYS.between(retiradaConvert, hoje);
+			double valorLocacaoLivro = numeroDiarias * l.getValorLocacao();
+			valorTotal =+ valorLocacaoLivro;
+		}
+		locacao.setValorTotal(valorTotal);
+		
+	}
+		
+	}
+	
+	private Boolean verificarLivrosPendentes(Locacao locacao) {
+		Boolean temPendencias = false;
+		
+		for(LivroLocacao l:locacao.getLivros()) {
+			if(l.getDataEntrega() == null) {
+				temPendencias = true;
+			}
+			
+		}
+		return temPendencias;
+	}
+
+	public String finalizarLocacao(Locacao locacao) {
+		atualizarValorLocacao(locacao);
 		locacao.setDataFinalizacao(new Date());
 		StatusLocacao status = StatusLocacao.FINALIZADA;
-		locacao.setValorTotal(valorTotal);
-		return locacaoRepository.save(locacao);
-	}
+		salvarLocacao(locacao);
+		return "Locacão finalizada com sucesso!";	}
 
 }

@@ -6,8 +6,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "error")
 public class ErrorResponse 
 {
+    public ErrorResponse(String message) {
+        this.message = message;
+    }
+    
     public ErrorResponse(String message, List<String> details) {
-        super();
         this.message = message;
         this.details = details;
     }

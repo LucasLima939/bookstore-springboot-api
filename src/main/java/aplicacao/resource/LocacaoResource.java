@@ -6,10 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.google.gson.Gson;
 
@@ -21,6 +25,7 @@ import aplicacao.model.LivroLocacao;
 import aplicacao.model.Locacao;
 import aplicacao.service.CadastroService;
 import aplicacao.service.LocacaoService;
+import jdk.jfr.BooleanFlag;
 
 @RestController
 @RequestMapping("/locacao")
@@ -33,23 +38,47 @@ public class LocacaoResource {
 	private CadastroService service;
 	
 	@PostMapping
-	public ResponseEntity agendarLocacao(@RequestHeader (name="Authorization") String token, Locacao locacao, List<Integer> ids) throws Exception {
-		
-	try {
+	public ResponseEntity agendarLocacao(@RequestHeader (name="Authorization") String token, @RequestBody Locacao locacao) throws Exception {	
+		try {	
+		    return new ResponseEntity<>(locacaoService.criarLocacao(tokenToCadastro(token), locacao), HttpStatus.OK); 			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
+		}	
+	}
+	
+	@GetMapping(path = "/{id}")
+	public ResponseEntity recuperarLocacao(@RequestHeader(name="Authorization") String token, @PathVariable("id") Integer id) {
+		try {
+		    return new ResponseEntity<>(locacaoService.localizarLocacao(id, tokenToCadastro(token)), HttpStatus.OK); 			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
+		}
+	}
+	
+	@PostMapping(path = "/{id}/reservar")
+	public ResponseEntity reservarLivros(@RequestHeader (name="Authorization") String token, @RequestBody List<LivroLocacao> livros, @PathVariable("id") Integer id) {
+		try {
+		    return new ResponseEntity<>(locacaoService.retirarLivros(id, tokenToCadastro(token), livros), HttpStatus.OK); 			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
+		}
+	}
+	
+	@PostMapping(path = "/{id}/devolver")
+	public ResponseEntity devolverLivros(@RequestHeader (name="Authorization") String token, @RequestBody List<Integer> livrosIds, @PathVariable("id") Integer id) {
+		try {
+		    return new ResponseEntity<>(locacaoService.entregarLivros(id, tokenToCadastro(token), livrosIds), HttpStatus.OK); 			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
+		}
+	}
+	
+	private Cadastro tokenToCadastro(String token) {
 		String[] chunks = token.split("\\.");
 		Base64.Decoder decoder = Base64.getDecoder();
 		String payload = new String(decoder.decode(chunks[1]));
 		JwtToken jwtPayload = new Gson().fromJson(payload, JwtToken.class);
-		Cadastro cadastro = service.recuperarUsuarioPorLogin(jwtPayload.getSub());
-		
-	    return new ResponseEntity<>(locacaoService.agendarLivro(cadastro, locacao, ids), HttpStatus.OK); 			
-	}catch(Exception e) {
-        ErrorResponse errorResponse = new ErrorResponse();
-		errorResponse.setMessage(e.getMessage());
-		return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);			
-	}
-	
-			
+		return service.recuperarUsuarioPorLogin(jwtPayload.getSub());		
 	}
 
 }

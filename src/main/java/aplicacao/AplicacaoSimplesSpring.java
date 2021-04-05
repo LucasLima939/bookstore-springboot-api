@@ -30,45 +30,45 @@ import aplicacao.service.ViaCepService;
 @Component
 public class AplicacaoSimplesSpring {
 	
-    @Autowired
-	private CadastroService cadastroService;
+//     @Autowired
+// 	private CadastroService cadastroService;
 	
-	@Autowired
-	private CadastroLivroService cadastroLivroService;
+// 	@Autowired
+// 	private CadastroLivroService cadastroLivroService;
 	
-	@Autowired
-	private LocacaoService locacaoService;
+// 	@Autowired
+// 	private LocacaoService locacaoService;
 	
-	public void cadastrarUsuario(Cadastro usuario, String cep, String numero){
-		if(usuario != null)
-			cadastroService.criarUsuario(usuario, 
-					cep,
-					numero
-					); // CEP
-	}
+// 	public void cadastrarUsuario(Cadastro usuario, String cep, String numero){
+// 		if(usuario != null)
+// 			cadastroService.criarUsuario(usuario, 
+// 					cep,
+// 					numero
+// 					); // CEP
+// 	}
 	
-	public void cadastrarLivro(CadastroLivro livro){
-		if(livro != null)
-			cadastroLivroService.criarLivro(livro);
-	}
+// 	public void cadastrarLivro(CadastroLivro livro){
+// 		if(livro != null)
+// 			cadastroLivroService.criarLivro(livro);
+// 	}
 	
-	public void cadastrarLocacao(Locacao locacao, List<LivroLocacao> livroLocacao) throws Exception{
-		if(locacao != null)
-			locacaoService.agendarLivro(locacao, livroLocacao);
-	}
+// 	public void cadastrarLocacao(Locacao locacao, List<LivroLocacao> livroLocacao) throws Exception{
+// 		if(locacao != null)
+// 			locacaoService.agendarLivro(locacao, livroLocacao);
+// 	}
 	
-//	public void editarUsuario(Cadastro usuario) {
-//		if(usuario != null && usuario.getId() != null)
-//			cadastroService.editarUsuario(usuario);
-//	}
+// //	public void editarUsuario(Cadastro usuario) {
+// //		if(usuario != null && usuario.getId() != null)
+// //			cadastroService.editarUsuario(usuario);
+// //	}
 	
-	public Cadastro getCadastro(Integer id) {
-		return cadastroService.recuperarUsuario(id);
-	}
+// 	public Cadastro getCadastro(Integer id) {
+// 		return cadastroService.recuperarUsuario(id);
+// 	}
 	
-	public List<CadastroLivro> getLivros() {
-		return cadastroLivroService.recuperarTodosLivros();
-	}
+// 	public List<CadastroLivro> getLivros() {
+// 		return cadastroLivroService.recuperarTodosLivros();
+// 	}
 	
 	
 }

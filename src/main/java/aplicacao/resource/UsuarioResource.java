@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.google.gson.Gson;
 
@@ -37,16 +38,29 @@ public class UsuarioResource {
 	@GetMapping(path = "/me")
 	public ResponseEntity get(@RequestHeader (name="Authorization") String token) {
 		try {
-			String[] chunks = token.split("\\.");
-			Base64.Decoder decoder = Base64.getDecoder();
-			String payload = new String(decoder.decode(chunks[1]));
-			JwtToken jwtPayload = new Gson().fromJson(payload, JwtToken.class);
-			Cadastro cadastro = service.recuperarUsuarioPorLogin(jwtPayload.getSub());
+			Cadastro cadastro = service.recuperarUsuarioPorLogin(recoverLoginFromToken(token));
 		    return new ResponseEntity<>(cadastro, HttpStatus.OK); 			
-		}catch(Exception e) {
-	        ErrorResponse errorResponse = new ErrorResponse();
-			errorResponse.setMessage(e.getMessage());
-			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
 		}
+	}
+	
+
+	@PutMapping(path = "/me")
+	public ResponseEntity editar(@RequestHeader (name="Authorization") String token, @RequestBody Cadastro cadastro) {
+		try {
+			Cadastro usuario = service.editarUsuarioLogado(recoverLoginFromToken(token), cadastro);
+		    return new ResponseEntity<>(usuario, HttpStatus.OK); 			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
+		}		
+	}
+	
+	private String recoverLoginFromToken(String token) {
+		String[] chunks = token.split("\\.");
+		Base64.Decoder decoder = Base64.getDecoder();
+		String payload = new String(decoder.decode(chunks[1]));
+		JwtToken jwtPayload = new Gson().fromJson(payload, JwtToken.class);
+		return jwtPayload.getSub();		
 	}
 }

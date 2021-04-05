@@ -33,9 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers(SWAGGER_WHITELIST).permitAll()
 		.antMatchers("/login").permitAll()
 
-		.antMatchers("/cadastro-livro").permitAll()
-		.antMatchers("/cadastro-livro/find/{id}").permitAll()
-		.antMatchers("/locacao").permitAll()
+		.antMatchers("/livros").authenticated()
+		.antMatchers("/livros/{id}").authenticated()
+		.antMatchers("/locacao").authenticated()
 		.antMatchers("/cadastro").permitAll()
 		.antMatchers("/usuario").authenticated()
 		.anyRequest().authenticated()

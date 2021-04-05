@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 
 import aplicacao.model.ErrorResponse;
 import aplicacao.model.Login;
@@ -25,10 +26,8 @@ public class LoginResource {
 		try { 
 			Sessao sessao = loginService.logar(login);
 		    return new ResponseEntity<>(sessao, HttpStatus.OK); 			
-		}catch(Exception e) {
-	        ErrorResponse errorResponse = new ErrorResponse();
-			errorResponse.setMessage(e.getMessage());
-			return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
 		}
 	}
 			
