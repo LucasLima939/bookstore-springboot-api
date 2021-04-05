@@ -29,6 +29,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -57,8 +58,8 @@ public class Cadastro {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
-	@ApiModelProperty(name = "nome")	
+
+	@JsonProperty("nome")
 	@Column(length = 50, nullable = false)
 	@NotNull @Size(min = 1, max = 50, message = "campo NOME obrigatório e menor que 50 caracteres")
 	private String name;
@@ -86,11 +87,12 @@ public class Cadastro {
 	@OneToOne(cascade = {CascadeType.ALL})
 	private Endereco endereco;
 
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@Transient
 	private String cep;
 	
-	@JsonProperty("numero_residencia")
-	@Transient	
+	@JsonProperty(value = "numero_residencia", access = Access.WRITE_ONLY)
+	@Transient
 	private String enderecoNumeroResidencia;
 	
 	@PrePersist
@@ -109,12 +111,12 @@ public class Cadastro {
 		this.cep = cep;
 	}
 
-	public String getNumero() {
+	public String getEnderecoNumeroResidencia() {
 		return enderecoNumeroResidencia;
 	}
 
-	public void setNumero(String numero) {
-		this.enderecoNumeroResidencia = numero;
+	public void setEnderecoNumeroResidencia(String enderecoNumeroResidencia) {
+		this.enderecoNumeroResidencia = enderecoNumeroResidencia;
 	}
 
 	public String getTelefone() {

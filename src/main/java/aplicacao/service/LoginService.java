@@ -6,10 +6,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import aplicacao.model.Cadastro;
 import aplicacao.model.Login;
@@ -29,18 +31,15 @@ public class LoginService {
 	
 	public Sessao logar (Login login) {
 		if(login == null || login.getLogin() == null || login.getSenha() == null) {
-			throw new RuntimeException("login e senha são requeridos");
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "login e senha são requeridos");	
 		}
 		
 		Cadastro cadastro = cadastroRepository.findByLoginLogin(login.getLogin());
-		if(cadastro == null) {
-			throw new RuntimeException("Usuário não existe");
-		}
+		if(cadastro == null) 
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Usuário não existe");	
 		boolean passwordMatches = encoder.matches(login.getSenha(), cadastro.getLogin().getSenha());
-		if(!passwordMatches) {
-			throw new RuntimeException("Login ou senha incorretos");
-		}
-		
+		if(!passwordMatches) 
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Login ou senha incorretos");		
 		return iniciarSessao(cadastro.getLogin().getLogin());
 		
 		
@@ -48,7 +47,7 @@ public class LoginService {
 	
 	public Sessao iniciarSessao(String login) {
 		if(login == null)
-			throw new RuntimeException("login vazio, não é possível iniciar sessão");
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "login vazio, não é possível iniciar sessão");
 		Sessao sessao = new Sessao(
 				login,
 				new Date(System.currentTimeMillis()),

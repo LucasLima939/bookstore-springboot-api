@@ -4,24 +4,45 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import io.swagger.annotations.ApiModelProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-@Embeddable
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
+
+@Entity
+@Table(name = "tab_livro_locacao")
 public class LivroLocacao {
 	
-	@ApiModelProperty(name = "livroId")
+
+    @ManyToOne
+    @JsonIgnore
+    private Locacao locacao;	
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@ApiModelProperty(hidden = true)	
+    private Integer id;
+
+	@JsonProperty("livro_id")
 	@NotNull(message = "Insira o ID do livro que você deseja locar")
 	@Column
-	private Integer id;
+	private Integer livroId;
 	
 	@NotNull(message = "Insira a QUANTIDADE do livro que você deseja locar")
 	@Column
@@ -29,12 +50,38 @@ public class LivroLocacao {
 
 	@ApiModelProperty(readOnly = true)
 	@Column
-	private double valorLocacao;	
+	private double valorLocacao;
+
+	@ApiModelProperty(hidden = true,readOnly = true, value = "livros")
+	@ManyToOne(cascade = {CascadeType.ALL})
+	private CadastroLivro cadastroLivro;
 
 	@ApiModelProperty(readOnly = true)	
 	@Temporal(TemporalType.DATE)
 	@Column
 	private Date dataRetirada = new Date(System.currentTimeMillis());
+
+	@ApiModelProperty(readOnly = true)	
+	@Temporal(TemporalType.DATE)
+	private Date dataEntrega;
+	
+	
+
+	public Locacao getLocacao() {
+		return locacao;
+	}
+
+	public void setLocacao(Locacao locacao) {
+		this.locacao = locacao;
+	}
+
+	public CadastroLivro getCadastroLivro() {
+		return cadastroLivro;
+	}
+
+	public void setCadastroLivro(CadastroLivro cadastroLivro) {
+		this.cadastroLivro = cadastroLivro;
+	}
 
 	public Date getDataRetirada() {
 		return dataRetirada;
@@ -51,10 +98,6 @@ public class LivroLocacao {
 	public void setDataEntrega(Date dataEntrega) {
 		this.dataEntrega = dataEntrega;
 	}
-
-	@ApiModelProperty(readOnly = true)	
-	@Temporal(TemporalType.DATE)
-	private Date dataEntrega;
 	
 	public Integer getId() {
 		return id;
@@ -70,6 +113,15 @@ public class LivroLocacao {
 
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
+	}	
+
+
+	public Integer getLivroId() {
+		return livroId;
+	}
+
+	public void setLivroId(Integer livroId) {
+		this.livroId = livroId;
 	}
 
 	public double getValorLocacao() {

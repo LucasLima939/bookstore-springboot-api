@@ -53,9 +53,10 @@ public class LocacaoService {
 
 	public Locacao criarLocacao(Cadastro cadastro, Locacao locacao) throws Exception {
 		try {
-			locacao.setCadastro(cadastro.getId());
+			locacao.setIdCadastro(cadastro.getId());
 			if(!locacao.getLivros().isEmpty()) {
 				validarLivros(locacao.getLivros());
+				verificarDisponibilidadeLivros(locacao.getLivros());
 				atualizarValorLocacao(locacao);
 			}
 			return locacaoRepository.save(locacao);			
@@ -67,7 +68,12 @@ public class LocacaoService {
 	private void validarLivros(List<LivroLocacao> livros){
 		Set<ConstraintViolation<LivroLocacao>> violations = new HashSet<ConstraintViolation<LivroLocacao>>();
 		for(LivroLocacao l:livros) {
-			violations.addAll(validator.validate(l));			
+			violations.addAll(validator.validate(l));
+			if(l.getCadastroLivro() == null) {
+				CadastroLivro cadastroLivro = cadastroLivroService.recuperarLivro(l.getLivroId());
+				l.setCadastroLivro(cadastroLivro);		
+				l.setValorLocacao(cadastroLivro.getValorDiaria());
+			}
 		}
 	    if(!violations.isEmpty()) {
 			String s = violations.stream().map(e -> e.getMessage()).collect(Collectors.joining(" ; "));
@@ -89,7 +95,7 @@ public class LocacaoService {
 		Locacao locacao = locacaoRepository.findById(id).orElse(null);
 		if(locacao == null)
 	    	throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Locação não localizada");
-		if(locacao.getCadastro() != cadastro.getId())
+		if(locacao.getIdCadastro() != cadastro.getId())
 	    	throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Você não possui autorização para alterar essa locação");
 		return locacao;		
 	}
@@ -109,15 +115,15 @@ public class LocacaoService {
 	}
 	
 	private void verificarDisponibilidadeLivros(List<LivroLocacao> livros) {
-		List<Integer> livrosIds = livros.stream().map(l -> l.getId()).collect(Collectors.toList());
+		List<Integer> livrosIds = livros.stream().map(l -> l.getLivroId()).collect(Collectors.toList());
 		List<CadastroLivro> cadastroLivros = cadastroLivroService.recuperarLivrosPorListaId(livrosIds);
 		for(LivroLocacao l:livros) {
-			CadastroLivro cadastroLivro = cadastroLivros.stream().filter(livro -> livro.getId().equals(l.getId())).findFirst().orElse(null);
+			CadastroLivro cadastroLivro = cadastroLivros.stream().filter(livro -> livro.getId().equals(l.getLivroId())).findFirst().orElse(null);
 			boolean podeLocar = l.getQuantidade() <= cadastroLivro.getNumeroExemplaresDisponivel();
 			if(podeLocar) {
 				alterarDisponibilidadeLivroReserva(cadastroLivro, l);
 			} else {
-		    	throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Quantidade de livros exede a disponível para o livro: " + l.getId());				
+		    	throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Quantidade de livros exede a disponível para o livro: " + l.getLivroId());				
 			}
 		}
 	}
@@ -150,9 +156,9 @@ public class LocacaoService {
 	public String entregarLivros(Integer locacaoId, Cadastro cadastro, List<Integer> livrosIds) {
 		Locacao locacao = localizarLocacao(locacaoId, cadastro);
 		locacao.getLivros().forEach(livro -> {
-			if(livrosIds.contains(livro.getId())) {
+			if(livrosIds.contains(livro.getLivroId())) {
 				livro.setDataEntrega(new Date(System.currentTimeMillis()));
-				CadastroLivro cadastroLivro = cadastroLivroService.recuperarLivro(livro.getId());
+				CadastroLivro cadastroLivro = cadastroLivroService.recuperarLivro(livro.getLivroId());
 				alterarDisponibilidadeLivroDevolucao(cadastroLivro, livro);
 			}
 		});

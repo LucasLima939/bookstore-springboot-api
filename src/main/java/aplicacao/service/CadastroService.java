@@ -55,7 +55,7 @@ public class CadastroService {
 	
 	public Sessao cadastrarUsuario(Cadastro usuario) {
 		validarUsuario(usuario);
-	    Cadastro cadastro = criarUsuario(usuario, usuario.getCep(), usuario.getNumero());
+	    Cadastro cadastro = criarUsuario(usuario, usuario.getCep(), usuario.getEnderecoNumeroResidencia());
 		
 
 		return loginService.iniciarSessao(cadastro.getLogin().getLogin());
@@ -64,7 +64,7 @@ public class CadastroService {
 	public Cadastro editarUsuario(Cadastro usuario, Integer id) {
 		if(cadastroRepository.existsById(id)) {
 			usuario.setId(id);
-			usuario.setEndereco(recuperarEnderecoViaCep(usuario.getCep(), usuario.getNumero()));
+			usuario.setEndereco(recuperarEnderecoViaCep(usuario.getCep(), usuario.getEnderecoNumeroResidencia()));
 			validarUsuario(usuario);
 			return salvarUsuario(usuario);
 		} else {
