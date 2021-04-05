@@ -2,9 +2,9 @@
 Construção de uma API biblioteca com cadastro de usuário, livros e locações. A API pode ser acessada em https://apirest-biblioteca.herokuapp.com/swagger-ui.html
 
 # Grupo na Minha Máquina Funciona
-Lucas Amaral
-Lucas Lima
-Mauricio Santos
+ - Lucas Amaral
+ - Lucas Lima
+ - Mauricio Santos
 
 # Estrutura do Projeto
 As classes do projeto foram divididas em pacotes de acordo com suas responsabilidades:
@@ -21,71 +21,80 @@ As classes do projeto foram divididas em pacotes de acordo com suas responsabili
 # Cadastro
 O model tem os atributos:
 
-Id
-Nome
-Cpf
-Email
-Telefone
-Login
-Endereço
-Cep
+ - Id
+ - Nome
+ - Cpf
+ - Email
+ - Telefone
+ - Login
+ - Endereço
+ - Cep
+
 Tem os getters e setters dos atributos
 Tem um construtor que já é criado o cadastro com o login e senha atribuida.
 O service faz as validações para criação do usuário:
-Campo nome,cpf e email são obrigatórios
-Campo cpf deve conter 11 caracteres
-Campos nome e email não devem passar de 50 caracteres
-Campo telefone não deve passar de 20 caracteres
-Não é possível cadastrar um cpf e login já existentes na base de dados
-Ao passar um cep para o cadastro, o sistema realizada a consulta do endereço no site https://viacep.com.br e salva o endereço encontrado junto com o cadastro
-Cadastro Livro
+
+ - Campo nome,cpf e email são obrigatórios
+ - Campo cpf deve conter 11 caracteres
+ - Campos nome e email não devem passar de 50 caracteres
+ - Campo telefone não deve passar de 20 caracteres
+ - Não é possível cadastrar um cpf e login já existentes na base de dados
+ - Ao passar um cep para o cadastro, o sistema realizada a consulta do endereço no site https://viacep.com.br e salva o endereço encontrado junto com o cadastro
+
+# Cadastro Livro
 O model tem os atributos:
 
-Id
-Isbn
-Título
-Valor da diária
-Número de exemplares
-Número de exemplares reservados
-Tem o construtor que passa os atributos do isbn, titulo, valor da diaria e número de exemplares.
-Tem os getters e setters dos atributos.
-O service faz as validações para criação de um livro:
-O campo isbn não deve passar de 50 caracteres
-O campo título não deve passar de 100 caracteres
-É obrigatório definir um valor de diária e a quantidade de números de exemplares
-O campo número de exemplares reservados é escondido no cadastro do livro, sendo manipulável apenas na realização de uma locação
-Não é possível realizar o cadastro de um livro que já existe no banco de dados
-ViaCepModel
+ - Id
+ - Isbn
+ - Título
+ - Valor da diária
+ - Número de exemplares
+ - Número de exemplares reservados
+ - Tem o construtor que passa os atributos do isbn, titulo, valor da diaria e número de exemplares.
+ - Tem os getters e setters dos atributos.
+ - O service faz as validações para criação de um livro:
+ - O campo isbn não deve passar de 50 caracteres
+ - O campo título não deve passar de 100 caracteres
+ - É obrigatório definir um valor de diária e a quantidade de números de exemplares
+ - O campo número de exemplares reservados é escondido no cadastro do livro, sendo manipulável apenas na realização de uma locação
+ - Não é possível realizar o cadastro de um livro que já existe no banco de dados
+
+# ViaCepModel
 O model tem os atributos:
 
-cep
-logradouro
-complemento
-bairro
-localidade
-uf
-ibge
-gia
-ddd
-siafi
+ - cep
+ - logradouro
+ - complemento
+ - bairro
+ - localidade
+ - uf
+ - ibge
+ - gia
+ - ddd
+ - siafi
+
 Tem os getters e setters dos atributos.
 O service realiza as validações para salvar os dados no ViaCepModel
-Ao passar um cep para o cadastro de um usuário, o ViaCepService realiza a consulta do endereço no site https://viacep.com.br e salva as informações retornadas nos atributos de sua classe.
+ 
+ - Ao passar um cep para o cadastro de um usuário, o ViaCepService realiza a consulta do endereço no site https://viacep.com.br e salva as informações retornadas nos atributos de sua classe.
  
 Endereço
 O model tem os atributos:
 
-Id
-cep
-logradouro
-número
-bairro
-cidade
-uf
-ibge
+ - Id
+ - cep
+ - logradouro
+ - número
+ - bairro
+ - cidade
+ - uf
+ - ibge
+
 O construtor é criado com os dados salvos no ViaCepModel sendo passados para os atributos da classe Endereço
-Tem os getters e setters dos atributos 
-Locação
+ 
+ - Tem os getters e setters dos atributos 
+
+# Locação
 O model tem os atributos:
 
 Id
