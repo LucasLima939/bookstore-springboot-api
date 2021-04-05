@@ -26,6 +26,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -41,7 +42,7 @@ public class Locacao {
 	@ApiModelProperty(readOnly = true)	
 	private Integer id;
 
-	@ApiModelProperty(readOnly = true)	
+    @JsonIgnore
 	@Column
     private Integer idCadastro;
 	
@@ -68,7 +69,7 @@ public class Locacao {
 	@Column
 	private StatusLocacao status = StatusLocacao.RESERVADA;
 
-	@ApiModelProperty(readOnly = true)	
+    @JsonIgnore
 	@Transient
 	private List<Integer> livrosIds;
 	

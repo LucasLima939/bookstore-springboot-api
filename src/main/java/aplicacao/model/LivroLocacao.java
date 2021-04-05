@@ -36,7 +36,7 @@ public class LivroLocacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@ApiModelProperty(hidden = true)	
+    @JsonIgnore
     private Integer id;
 
 	@JsonProperty("livro_id")
@@ -52,7 +52,8 @@ public class LivroLocacao {
 	@Column
 	private double valorLocacao;
 
-	@ApiModelProperty(hidden = true,readOnly = true, value = "livros")
+	@JsonProperty("livros")
+	@ApiModelProperty(hidden = true,readOnly = true)
 	@ManyToOne(cascade = {CascadeType.ALL})
 	private CadastroLivro cadastroLivro;
 

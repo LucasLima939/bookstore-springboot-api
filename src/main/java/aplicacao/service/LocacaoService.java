@@ -177,7 +177,7 @@ public class LocacaoService {
 			if(l.getDataEntrega() != null) {
 			LocalDate hoje = LocalDate.now();
 			LocalDate retiradaConvert = l.getDataRetirada().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			Double numeroDiarias = (double) ChronoUnit.DAYS.between(retiradaConvert, hoje);
+			Double numeroDiarias = (double) ChronoUnit.DAYS.between(retiradaConvert, hoje) + 1;
 			double valorLocacaoLivro = numeroDiarias * l.getValorLocacao();
 			valorTotal =+ valorLocacaoLivro;
 		}
