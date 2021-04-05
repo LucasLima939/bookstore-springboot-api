@@ -97,81 +97,85 @@ O construtor é criado com os dados salvos no ViaCepModel sendo passados para os
 # Locação
 O model tem os atributos:
 
-Id
-Cadastro
-Lista de livros
-Data de agendamento
-Data de retirada
-Data de finalização
-Valor total
-Status Locação
+ - Id
+ - Cadastro
+ - Lista de livros
+ - Data de agendamento
+ - Data de retirada
+ - Data de finalização
+ - Valor total
+ - Status Locação
 
 Tem os getters e setters dos atributos
 O service faz as validações para criação de uma locação:
-Toda locação é iniciada com uma data de agendamento, Status da locação como Reservada e valor total = 0
-Ao incluir uma lista de livros na locação, é verificado se o campo número de exemplares do livro é maior ou igual a 1
-Ao incluir uma lista de livros na locação, é realizado o decremento da quantidade de número de exemplares e adicionado no campo número de exemplares reservados
-Ao realizar uma retirada de uma locação, é inserido a data de retirada e alterado o status da locação para Efetivada
-Ao finalizar a locação, é realizado o cálculo do número de diárias, subtraindo a data da devolução com a data da retirada. Após isso, é calculado o valor total da locação, sendo realizado o cálculo com o número de diárias * valor da diária de todos os livros que estão na locação.
-Ao finalizar a locação, é inserido a data de finalização e alterado o status da locação para Finalizada
-Login
+ - Toda locação é iniciada com uma data de agendamento, Status da locação como Reservada e valor total = 0
+ - Ao incluir uma lista de livros na locação, é verificado se o campo número de exemplares do livro é maior ou igual a 1
+ - Ao incluir uma lista de livros na locação, é realizado o decremento da quantidade de número de exemplares e adicionado no campo número de exemplares reservados
+ - Ao realizar uma retirada de uma locação, é inserido a data de retirada e alterado o status da locação para Efetivada
+ - Ao finalizar a locação, é realizado o cálculo do número de diárias, subtraindo a data da devolução com a data da retirada. Após isso, é calculado o valor total da locação, sendo realizado o cálculo com o número de diárias * valor da diária de todos os livros que estão na locação.
+ - Ao finalizar a locação, é inserido a data de finalização e alterado o status da locação para Finalizada
+
+# Login
 O model tem os seus atributos:
 
-Login
-Senha
+ - Login
+ - Senha
+
+Tem os getters e setters dos atributos
+O service faz as validações para criação de um login
+ - Os campos login e senha não devem ser vazios
+ - É realizado a verificação da senha informada é a mesma da senha cadastrada ao usuário
+ - Ao realizar login é iniciada uma sessão com um token de expiração
+
+# Sessão
+O model tem os seus atributos:
+
+ - Login
+ - Token
+ - Data início
+ - Data fim
 
 Tem os getters e setters dos atributos
 
 O service faz as validações para criação de um login
-Os campos login e senha não devem ser vazios
-É realizado a verificação da senha informada é a mesma da senha cadastrada ao usuário
-Ao realizar login é iniciada uma sessão com um token de expiração
-Sessão
-O model tem os seus atributos:
+ - Ao realizar login, gerado um token de acesso e inserido a data inicio da consulta e uma data fim de expiração do login
 
-Login
-Token
-Data início
-Data fim
-
-Tem os getters e setters dos atributos
-
-O service faz as validações para criação de um login
-Ao realizar login, gerado um token de acesso e inserido a data inicio da consulta e uma data fim de expiração do login
-Telefone
+# Telefone
 O model tem seus atributos:
 
-Cadastro
-numero
-Telefone tipo
+ - Cadastro
+ - Numero
+ - Telefone tipo
 
- Tem os getters e setters dos atributos
-StatusLocação Enum
-RESERVADA
-EFETIVADA
-FINALIZADA
+Tem os getters e setters dos atributos
 
-TelefoneTipo Enum
-WHATSAPP
-FIXO
-COMERCIAL
-Spring Boot
+# StatusLocação Enum
+ - RESERVADA
+ - EFETIVADA
+ - FINALIZADA
+
+# TelefoneTipo Enum
+ - WHATSAPP
+ - FIXO
+ - COMERCIAL
+
+# Spring Boot
 A API será hospedada no Swagger para apresentação do projeto final e checagens posteriores realizadas por terceiros
 
-Funcionalidades da API
+# Funcionalidades da API
 Usuário
-Criar usuario
-logar
-Consultar usuário
+ - Criar usuario
+ - Logar
+- Consultar usuário
 Livro
-Criar livro
-Consultar livro
+ - Criar livro
+ - Consultar livro
 Locação
-Agendar locação
-Retirar locação
-Finalizar locação
+ - Agendar locação
+ - Retirar locação
+ - Finalizar locação
 
-Segurança
+# Segurança
 A API usa o Json Web Token (JWT) para autenticação dos endpoints durante o seu uso e o Spring Security para configurações internas da API.
 
 
