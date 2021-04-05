@@ -38,14 +38,29 @@ public class UsuarioResource {
 	@GetMapping(path = "/me")
 	public ResponseEntity get(@RequestHeader (name="Authorization") String token) {
 		try {
-			String[] chunks = token.split("\\.");
-			Base64.Decoder decoder = Base64.getDecoder();
-			String payload = new String(decoder.decode(chunks[1]));
-			JwtToken jwtPayload = new Gson().fromJson(payload, JwtToken.class);
-			Cadastro cadastro = service.recuperarUsuarioPorLogin(jwtPayload.getSub());
+			Cadastro cadastro = service.recuperarUsuarioPorLogin(recoverLoginFromToken(token));
 		    return new ResponseEntity<>(cadastro, HttpStatus.OK); 			
 		}catch(HttpClientErrorException e) {
-			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());			
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
 		}
+	}
+	
+
+	@PutMapping(path = "/me")
+	public ResponseEntity editar(@RequestHeader (name="Authorization") String token, @RequestBody Cadastro cadastro) {
+		try {
+			Cadastro usuario = service.editarUsuarioLogado(recoverLoginFromToken(token), cadastro);
+		    return new ResponseEntity<>(usuario, HttpStatus.OK); 			
+		}catch(HttpClientErrorException e) {
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());			
+		}		
+	}
+	
+	private String recoverLoginFromToken(String token) {
+		String[] chunks = token.split("\\.");
+		Base64.Decoder decoder = Base64.getDecoder();
+		String payload = new String(decoder.decode(chunks[1]));
+		JwtToken jwtPayload = new Gson().fromJson(payload, JwtToken.class);
+		return jwtPayload.getSub();		
 	}
 }

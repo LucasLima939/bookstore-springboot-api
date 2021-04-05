@@ -50,17 +50,17 @@ public class CadastroLivroResource {
 				CadastroLivro livroCadastrado = cadastroLivroService.criarLivro(livro);
 			    return new ResponseEntity<>(livroCadastrado, HttpStatus.CREATED); 			
 			}catch(HttpClientErrorException e) {
-				return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+				return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
 			}
 		}
 		
 		@GetMapping
-		public ResponseEntity get() {			
+		public ResponseEntity recuperarTodosOsLivros() {			
 			try {
 				List<CadastroLivro> livrosCadastrado = cadastroLivroService.recuperarTodosLivros();
 			    return new ResponseEntity<>(livrosCadastrado, HttpStatus.OK); 			
 			}catch(HttpClientErrorException e) {
-				return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+				return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
 			}
 		}
 		
@@ -70,7 +70,7 @@ public class CadastroLivroResource {
 				CadastroLivro livro = cadastroLivroService.recuperarLivro(id);
 			    return new ResponseEntity<>(livro, HttpStatus.OK); 			
 			}catch(HttpClientErrorException e) {
-				return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+				return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
 			}
 		}
 		
@@ -80,17 +80,17 @@ public class CadastroLivroResource {
 				CadastroLivro cadastroLivro = cadastroLivroService.editarLivro(livro, id);
 			    return new ResponseEntity<>(cadastroLivro, HttpStatus.OK); 		
 			}catch(HttpClientErrorException e) {
-				return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+				return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
 			}
 		}
 		
-		@DeleteMapping(path = "/{id")
+		@DeleteMapping(path = "/{id}")
 		public ResponseEntity deletar(@PathVariable("id") Integer id) {
 			try {
 				cadastroLivroService.deleteLivro(id);
 				return new ResponseEntity<>("Livro deletado com sucesso", HttpStatus.OK);
 			} catch(HttpClientErrorException e) {
-				return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+				return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
 			}
 		}
 		

@@ -65,27 +65,43 @@ public class CadastroService {
 		return loginService.iniciarSessao(cadastro.getLogin().getLogin());
 	}
 	
+	public Cadastro editarUsuario(Cadastro usuario, Integer id) {
+		if(cadastroRepository.existsById(id)) {
+			usuario.setId(id);
+			usuario.setEndereco(recuperarEnderecoViaCep(usuario.getCep(), usuario.getNumero()));
+			return salvarUsuario(usuario);
+		} else {
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Usuário não localizado");	
+		}
+	}
+	
 	public Cadastro criarUsuario(Cadastro usuario, String cep, String numero) {
+		usuario.setEndereco(recuperarEnderecoViaCep(cep, numero));
+		String senha = null;
+		senha = encoder.encode(usuario.getLogin().getSenha());				
+		if(senha == null)
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Erro ao processar senha");
+		usuario.getLogin().setSenha(senha);
+		
+		return salvarUsuario(usuario);
+	}
+	
+	private Endereco recuperarEnderecoViaCep(String cep, String numero) {
 		ViaCepModel model = null;
-		if(cep != null && !cep.isEmpty()) {
-			model = viaCepService.getModelByCep(cep);
-			} else {
-				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "cep inválido");
-			}
-		if(model != null) {
-			usuario.setEndereco(new Endereco(model, numero));
-			String senha = null;
-			try {
-				senha = encoder.encode(usuario.getLogin().getSenha());				
-			
-				usuario.getLogin().setSenha(senha);
-				return cadastroRepository.save(usuario);
-			}catch (Exception e) {
-				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "falha ao cadastrar usuário");	
-			}
-        } else {
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "erro ao recuperar endereço");
-        }
+		if(cep == null || cep.isEmpty())
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "cep inválido");
+		model = viaCepService.getModelByCep(cep);
+		if(model == null)
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Erro ao recuperar endereço via CEP");
+		return new Endereco(model, numero);
+	}
+	
+	private Cadastro salvarUsuario(Cadastro usuario) {
+		try {
+			return cadastroRepository.save(usuario);
+		}catch (Exception e) {
+			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "falha ao cadastrar usuário");	
+		}
 	}
 	
 	public Cadastro recuperarUsuario(Integer id){
@@ -98,8 +114,14 @@ public class CadastroService {
 	public Cadastro recuperarUsuarioPorLogin(String login){
 		Cadastro cadastro = cadastroRepository.findByLoginLogin(login);
 		if(cadastro == null)
-			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "erro ao recuperar usuário, gere um novo token");
+			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "erro ao recuperar usuário");
 		return cadastro;
+	}
+	
+	public Cadastro editarUsuarioLogado(String login, Cadastro cadastro){
+		Cadastro usuario = recuperarUsuarioPorLogin(login);
+		return editarUsuario(cadastro, usuario.getId());
+		
 	}
 	
 	public List<Cadastro> recuperarTodosUsuarios() {

@@ -76,6 +76,7 @@ public class CadastroLivroService {
 	
 	public CadastroLivro editarLivro(CadastroLivro livro, Integer id){
 		if(livroRepository.existsById(id)) {
+			livro.setId(id);
 			return criarLivro(livro);
 		} else {
 			throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Livro não localizado");	

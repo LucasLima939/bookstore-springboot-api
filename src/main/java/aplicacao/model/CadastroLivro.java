@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModelProperty.AccessMode;
 
 @Entity
 @Table(name = "tab_cadastro_livro")
@@ -29,7 +30,7 @@ public class CadastroLivro {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)	
-	@JsonProperty(access = Access.WRITE_ONLY)	
+	@ApiModelProperty(readOnly = true)	
 	private Integer id;
 	
 	@Column(length = 50, nullable = false)
@@ -59,6 +60,26 @@ public class CadastroLivro {
 		this.numeroExemplares = numeroExemplares;
 	}
 	
+
+	public Integer getId() {
+		return id;
+	}
+
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+
+	public void setNumeroExemplares(int numeroExemplares) {
+		this.numeroExemplares = numeroExemplares;
+	}
+
+
+	public void setNumeroExemplaresReservados(int numeroExemplaresReservados) {
+		this.numeroExemplaresReservados = numeroExemplaresReservados;
+	}
+
 
 	public String getIsbn() {
 		return isbn;

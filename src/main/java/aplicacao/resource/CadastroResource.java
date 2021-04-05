@@ -32,7 +32,7 @@ public class CadastroResource {
 			Sessao sessao = service.cadastrarUsuario(cadastro);
 		    return new ResponseEntity<>(sessao, HttpStatus.OK); 			
 		}catch(HttpClientErrorException e) {
-			return new ResponseEntity<>(e.getMessage(), e.getStatusCode());
+			return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
 		}
 	}
 
